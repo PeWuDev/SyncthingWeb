@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using SyncthingWeb.Helpers;
+using SyncthingWebUI.Helpers;
 
 namespace SyncthingWeb.Models
 {
@@ -26,7 +28,7 @@ namespace SyncthingWeb.Models
 
         public string GetDirectory()
         {
-            return null; //return PathHelpers.GetDirPathFromRelativePath(this.Path);
+            return PathHelpers.GetDirPathFromRelativePath(this.Path);
         }
     }
 }

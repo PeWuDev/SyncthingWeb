@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-SyncthingWeb-d58d8c7f-f8b7-4c3d-94f3-66d1ee2ee957",
 
   "dependencies": {
@@ -42,7 +42,9 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
+    },
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "Autofac": "4.1.0"
   },
 
   "tools": {
