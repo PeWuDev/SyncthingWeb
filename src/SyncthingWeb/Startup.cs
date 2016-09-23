@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SyncthingWeb.Data;
 using SyncthingWeb.Models;
+using SyncthingWeb.Modules;
 using SyncthingWeb.Services;
 
 namespace SyncthingWeb
@@ -44,6 +45,7 @@ namespace SyncthingWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -67,6 +69,9 @@ namespace SyncthingWeb
             // be sure to keep a reference to it as a property or field.
             //builder.RegisterType<MyType>().As<IMyType>();
             builder.Populate(services);
+
+            builder.RegisterModule<CacheModule>();
+
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
