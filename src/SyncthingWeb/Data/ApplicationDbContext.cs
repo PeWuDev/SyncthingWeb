@@ -22,5 +22,10 @@ namespace SyncthingWeb.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<GeneralSettings> GeneralSettingses { get; set; }
+        public DbSet<Folder> Folders { get; set; }
+        public DbSet<SharedEntry> SharedEntries { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
     }
 }
