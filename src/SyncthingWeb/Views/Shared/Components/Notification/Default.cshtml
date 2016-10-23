@@ -1,0 +1,46 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Notifications
+@model IList<NotifyRecord>
+
+@{
+    var id = Guid.NewGuid().ToString("N");
+}
+
+@functions {
+
+    string GetClassName(NotifyType type)
+    {
+        return type.ToString().ToLower();
+    }
+
+
+}
+
+<div id="@id"></div>
+
+<script type="text/javascript">
+    window.notification = new function () {
+        var self = this;
+
+        this.notify = function (type, msg) {
+            var rnd = $("<div />").attr("class", "alert alert-" + type + " alert-dismissible");
+            rnd.append($("<button />").attr("aria-hidden", "true").attr("data-dismiss", "alert").attr("class", "close").attr("type", "button"));
+            rnd.append("<span />").text(msg);
+            $(rnd).appendTo($("#@id"));
+        };
+
+        this.notifyError = function (msg) {
+            self.notify("danger", msg);
+        };
+
+        this.notifySuccess = function (msg) {
+            self.notify("success", msg);
+        };
+
+        @foreach (var item in Model)
+        {
+            <text>this.notify("@GetClassName(item.Type)", "@Html.Raw(item.Text)")</text>
+        }
+    }
+
+</script>
