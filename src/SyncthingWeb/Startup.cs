@@ -55,6 +55,8 @@ namespace SyncthingWeb
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -71,6 +73,7 @@ namespace SyncthingWeb
             builder.Populate(services);
 
             builder.RegisterModule<CacheModule>();
+            builder.RegisterModule<NotificationsModule>();
 
             this.ApplicationContainer = builder.Build();
 
@@ -101,6 +104,7 @@ namespace SyncthingWeb
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
