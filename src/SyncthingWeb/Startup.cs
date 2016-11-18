@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SyncthingWeb.Attributes;
 using SyncthingWeb.Bus;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
@@ -19,6 +20,7 @@ using SyncthingWeb.Models;
 using SyncthingWeb.Modules;
 using SyncthingWeb.Permissions;
 using SyncthingWeb.Services;
+using SyncthingWeb.Syncthing;
 
 namespace SyncthingWeb
 {
@@ -58,13 +60,17 @@ namespace SyncthingWeb
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc(opt =>
+            {
+                opt.Filters.Add(typeof(SetupRequiredAttribute));
+            });
             services.AddDistributedMemoryCache();
             services.AddSession();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
 
 
             var builder = new ContainerBuilder();
@@ -80,6 +86,7 @@ namespace SyncthingWeb
             builder.RegisterModule<NotificationsModule>();
             builder.RegisterModule<CommandsModule>();
             builder.RegisterModule<EventBusModule>();
+            builder.RegisterModule<SyncthingModule>();
 
             ApplicationContainer = builder.Build();
 
@@ -116,7 +123,10 @@ namespace SyncthingWeb
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
             });
+
+
         }
 
         public void ConfigureEvents(ContainerBuilder builder)
