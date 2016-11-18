@@ -4,19 +4,19 @@ using SyncthingWeb.Caching;
 using SyncthingWeb.Commands.Implementation.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using SyncthingWeb.Bus;
 
 namespace SyncthingWeb.Commands.Implementation.Users
 {
     public class AssignRoleCommand : NonQueryCommand
     {
         private readonly ICache cache;
+        private readonly IEventBus eventBus;
 
-        private readonly IUserRolesChanged changedEvent;
-
-        public AssignRoleCommand(ICache cache, IUserRolesChanged changedEvent)
+        public AssignRoleCommand(ICache cache, IEventBus eventBus)
         {
             this.cache = cache;
-            this.changedEvent = changedEvent;
+            this.eventBus = eventBus;
         }
 
         public string Role { get; private set; }
@@ -40,7 +40,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
                     user.Roles.Add(new IdentityUserRole<string> { RoleId = this.Role });
                     await this.Context.SaveChangesAsync();
 
-                    await this.changedEvent.Added(this.User);
+                    await this.eventBus.Trigger(new AddedUserRoleEvent(this.User));
                 }
                 finally
                 {

@@ -16,7 +16,7 @@ namespace SyncthingWeb.ViewComponents
             this.notification = notification;
         }
 
-        public IViewComponentResult Invoke(int numberOfItems)
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             var all = this.notification.Notifications;
 

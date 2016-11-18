@@ -32,7 +32,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
         {
             var q = this.Context.Users.AsQueryable();
 
-            /* TODO q = this.toInclude.Aggregate(q, (current, inc) => current.Include(inc)); */
+            q = this.toInclude.Aggregate(q, (current, inc) => current.Include(inc)); 
 
             return q.FirstOrDefaultAsync(u => u.Id == this.Id);
         }

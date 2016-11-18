@@ -37,9 +37,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
             foreach (var fd in allFolders)
                 usr.Allowed.Add(new AllowedFolder
                 {
-                    FolderId = fd.Id,
-                    //CanShare = this.Folders.Single(folderParam => folderParam.FolderId == fd.FolderId).CanShare
-                    //TODO hashset or sth
+                    FolderId = fd.Id
                 });
 
             try

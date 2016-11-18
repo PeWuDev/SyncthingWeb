@@ -28,35 +28,142 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
     </environment>
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a asp-action="Index" asp-area="" asp-controller="Home" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>A</b>LT</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">Syncthing <b>Web</b></span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">SyncthingWeb</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2016 - SyncthingWeb</p>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                @await Component.InvokeAsync("Gravatar", new {  size = 160, userEmail = /* User.Identity.Name */ "patryk.wasiewicz@outlook.com", additionalClass = "user-image" })
+                                <span class="hidden-xs">@User.Identity.Name</span>
+                            </a>
+                            @* TODO @Html.Action("UserSmallMenu", "Layout", new { area = "" })*@
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        @*<li>
+                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                            </li>*@
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        @await Component.InvokeAsync("Gravatar", new { size = 160, userEmail = /* User.Identity.Name */ "patryk.wasiewicz@outlook.com", additionalClass = "img-circle" })
+                    </div>
+                    <div class="pull-left info">
+                        <p>@User.Identity.Name</p>
+                        <!-- Status -->
+                        @*<a href="#"><i class="fa fa-circle text-success"></i> Online</a>*@
+                    </div>
+                </div>
+
+                <!-- search form (Optional) -->
+                <form action="@Url.Action("Index", "Search", new { area ="" })" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="id" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+                <!-- /.search form -->
+                <!-- Sidebar Menu -->
+
+                @* TODO @Html.Action("MainMenu", "Layout", new { area = "" })*@
+
+            </section>
+            <!-- /.sidebar -->
+
+            <script type="text/javascript">
+                    $(".sidebar-menu li.active").each(function () {
+                        var li = $(this);
+                        li.closest(".treeview").addClass("active");
+                    });
+            </script>
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                    <small>@ViewBag.TitleHelper</small>
+                </h1>
+
+                @{
+                    var breadcrumb = ViewBag.Breadcrumb as IList<BreadcrumbViewModel>;
+                }
+
+                @if (breadcrumb != null)
+                {
+                    <ol class="breadcrumb">
+                        @for (var i = 0; i < breadcrumb.Count; i++)
+                        {
+                            var part = breadcrumb[i];
+                            <li>
+                                <a href="@Html.Raw(part.Url)" class="@(i == breadcrumb.Count- 1 ? "active" : "")">
+                                    @if (!string.IsNullOrWhiteSpace(part.Icon))
+                                    {
+                                        <i class="fa fa-@part.Icon"></i>
+                                    }
+                                    @part.Text
+                                </a>
+                            </li>
+                        }
+                    </ol>
+                }
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                @await Component.InvokeAsync("Notification")
+
+                @RenderBody()
+
+            </section><!-- /.content -->
+        </div><!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            @*<div class="pull-right hidden-xs">
+                    Anything you want
+                </div>*@
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2015 <a href="#">PeWuDev</a>.</strong> All rights reserved. Version: 0.0.1 BETA
         </footer>
-    </div>
+
+        <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

@@ -11,9 +11,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SyncthingWeb.Bus;
+using SyncthingWeb.Commands;
+using SyncthingWeb.Commands.Implementation.Events;
 using SyncthingWeb.Data;
 using SyncthingWeb.Models;
 using SyncthingWeb.Modules;
+using SyncthingWeb.Permissions;
 using SyncthingWeb.Services;
 
 namespace SyncthingWeb
@@ -40,7 +44,7 @@ namespace SyncthingWeb
         public IConfigurationRoot Configuration { get; }
 
 
-        public IContainer ApplicationContainer { get; private set; }
+        public static IContainer ApplicationContainer { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -74,11 +78,13 @@ namespace SyncthingWeb
 
             builder.RegisterModule<CacheModule>();
             builder.RegisterModule<NotificationsModule>();
+            builder.RegisterModule<CommandsModule>();
+            builder.RegisterModule<EventBusModule>();
 
-            this.ApplicationContainer = builder.Build();
+            ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(this.ApplicationContainer);
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +117,19 @@ namespace SyncthingWeb
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        public void ConfigureEvents(ContainerBuilder builder)
+        {
+            builder.RegisterType<DefaultPermissionResolver>()
+                .As<IEventHandler<AddedUserRoleEvent>>()
+                .InstancePerDependency()
+                .PropertiesAutowired();
+
+            builder.RegisterType<DefaultPermissionResolver>()
+                .As<IEventHandler<RemovedUserRoleEvent>>()
+                .InstancePerDependency()
+                .PropertiesAutowired();
         }
     }
 }

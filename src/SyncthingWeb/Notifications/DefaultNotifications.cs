@@ -11,9 +11,9 @@ namespace SyncthingWeb.Notifications
 
         private readonly ISession session;
 
-        public DefaultNotification(HttpContext context)
+        public DefaultNotification(IHttpContextAccessor context)
         {
-            this.session = context.Session;
+            this.session = context.HttpContext.Session;
         }
 
         public IList<NotifyRecord> Notifications

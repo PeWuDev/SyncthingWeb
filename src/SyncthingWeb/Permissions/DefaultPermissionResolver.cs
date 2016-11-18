@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using SyncthingWeb.Bus;
 using SyncthingWeb.Caching;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
@@ -12,7 +13,7 @@ using SyncthingWebUI.Permissions;
 
 namespace SyncthingWeb.Permissions
 {
-    internal class DefaultPermissionResolver : IPermissionResolver, IUserRolesChanged
+    internal class DefaultPermissionResolver : IPermissionResolver, IEventHandler<AddedUserRoleEvent>, IEventHandler<RemovedUserRoleEvent>
     {
         private const string AllPermissionsKey = "all-permissions";
         private const string AllPermissionsDictKey = "all-permissions-dictionary";
@@ -115,18 +116,6 @@ namespace SyncthingWeb.Permissions
             return new HashSet<Permission>(this.AllPermissions.Where(p => permissionsNamesSet.Contains(p.Name)));
         }
 
-        public Task Added(string userId)
-        {
-            this.cache.Signal(PermissionForUserKey(userId));
-            return Task.FromResult(true);
-        }
-
-        public Task Remove(string userId)
-        {
-            this.cache.Signal(PermissionForUserKey(userId));
-            return Task.FromResult(true);
-        }
-
         private static string PermissionForUserKey(string userId)
         {
             return string.Format(UserPermissionsTemplate, userId);
@@ -139,6 +128,18 @@ namespace SyncthingWeb.Permissions
             this.permissionProvider.Register(coll);
 
             return new HashSet<Permission>(coll);
+        }
+
+        public Task HandleAsync(AddedUserRoleEvent @event)
+        {
+            this.cache.Signal(PermissionForUserKey(@event.UserId));
+            return Task.FromResult(true);
+        }
+
+        public Task HandleAsync(RemovedUserRoleEvent @event)
+        {
+            this.cache.Signal(PermissionForUserKey(@event.UserId));
+            return Task.FromResult(true);
         }
     }
 }

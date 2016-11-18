@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SyncthingWeb.Caching;
 using Microsoft.EntityFrameworkCore;
+using SyncthingWeb.Bus;
 using SyncthingWeb.Commands.Implementation.Events;
 
 namespace SyncthingWeb.Commands.Implementation.Users
@@ -10,13 +12,13 @@ namespace SyncthingWeb.Commands.Implementation.Users
     public class DeassignRoleCommand : NonQueryCommand
     {
         private readonly ICache cache;
+        private readonly IEventBus eventBus;
 
-        private readonly IUserRolesChanged changedEvent;
-
-        public DeassignRoleCommand(ICache cache, IUserRolesChanged changedEvent)
+        public DeassignRoleCommand(ICache cache, IEventBus eventBus)
         {
+            if (eventBus == null) throw new ArgumentNullException(nameof(eventBus));
             this.cache = cache;
-            this.changedEvent = changedEvent;
+            this.eventBus = eventBus;
         }
 
         public string Role { get; private set; }
@@ -41,7 +43,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
                     user.Roles.Remove(ru);
 
                     await this.Context.SaveChangesAsync();
-                    await this.changedEvent.Remove(this.User);
+                    await this.eventBus.Trigger(new RemovedUserRoleEvent(this.User));
                 }
                 finally
                 {

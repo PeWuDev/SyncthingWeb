@@ -13,10 +13,10 @@ namespace SyncthingWeb.Commands
 
             builder.RegisterType<DefaultTraManager>()
                 .AsImplementedInterfaces()
-                .InstancePerRequest()
+                .InstancePerLifetimeScope()
                 .PropertiesAutowired();
 
-            builder.RegisterType<DefaultCommandFactory>().AsImplementedInterfaces().InstancePerRequest();
+            builder.RegisterType<DefaultCommandFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(dataAccess)
                 .Where(
