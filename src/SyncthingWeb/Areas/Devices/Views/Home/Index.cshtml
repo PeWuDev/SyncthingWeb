@@ -1,0 +1,76 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Extensions
+@model System.Collections.ObjectModel.ReadOnlyCollection<SyncthingWeb.Syncthing.SyncthingDevice>
+
+@{
+    ViewBag.Title = "Devices";
+    Layout = "~/VIews/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12 col-sm-12">
+        @{
+            var devicesGrouped = Model.DivideIntoRows(2);
+
+        }
+
+        @foreach (var devicesRow in devicesGrouped.Select(d => d.ToList()))
+        {
+            <div class="row">
+                @for (var i = 0; i < 4; i++)
+                {
+
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+
+                        @if (i < devicesRow.Count)
+                        {
+                            var device = devicesRow[i];
+
+                            <div class="info-box bg-aqua" data-open-device="@device.Id" style="cursor: pointer">
+                                <div class="box-tools pull-right">
+                                    @*<button data-url="@Url.Action("GetFolder", "Home", new { id = Model.FolderId, path = Model.PathFor(device.Name) })" type="button" class="btn btn-box-tool"><i class="fa fa-download"></i></button>*@
+                                </div>
+
+                                <span class="info-box-icon bg-aqua-active"><i class="fa fa-hdd-o"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">@device.Id</span>
+                                    <span class="info-box-text">@device.Folders.Count() folder(s)</span>
+                                    <span style="color: white"  href="#" class="info-box-number">
+                                        @device.Name
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 col-sm-12" data-folders="">
+        <div class="well">
+            Select device to fetch folders
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        var version = 0;
+        $("[data-open-device]").click(function() {
+            var devId = $(this).attr("data-open-device");
+            version++;
+            $.get("@Url.Action("Folders")", {
+                deviceId: devId,
+                version: version
+            }, function (data) {
+                if (parseInt($(data).attr("data-version")) !== version) return;
+
+                $("[data-folders]").html(data);
+            }).fail(function() {
+                window.notification.notifyError("Unable to fetch fodlers list..");
+            });
+        });
+</script>
+}

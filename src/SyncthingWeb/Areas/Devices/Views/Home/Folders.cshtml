@@ -1,0 +1,37 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Syncthing
+@model System.Collections.Generic.IEnumerable<SyncthingWeb.Syncthing.SyncthingFolder>
+
+<div data-version="@ViewBag.Version">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>@ViewBag.Device.Name</h4>
+        </div>
+    </div>
+    @if (Model.Any())
+    {
+        foreach (var fd in Model)
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                    <div class="info-box">
+                        <div class="box-tools pull-right">
+                        </div>
+                        <span class="info-box-icon bg-yellow"><i class="fa  fa-folder-open-o"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">All devices: @fd.Devices.Count()</span>
+                            <a href="@Url.Action("Index", "Home", new { id = fd.Id, area = "Folders" })" class="info-box-number">@fd.Id</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="well">
+            No folders to show
+        </div>
+    }
+</div>

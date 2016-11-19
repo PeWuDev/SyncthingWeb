@@ -13,7 +13,7 @@ using SyncthingWebUI.Areas.Users.Permissions;
 
 namespace SyncthingWeb.Areas.Users.Controllers
 {
-    [Authorize]
+    [Authorize, Area("Users")]
     public class HomeController : ExtendedController
     {
         private readonly ISyncthingContextFactory syncthingContextFactory;

@@ -1,5 +1,7 @@
-﻿@using SyncthingWebUI.Extensions
-@model SyncthingWebUI.Helpers.PagingResult<SyncthingWebUI.Models.ApplicationUser, SyncthingWebUI.Commands.Implementations.Users.GetUsersQuery>
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Commands.Implementation.Users
+@using SyncthingWeb.Extensions
+@model SyncthingWebUI.Helpers.PagingResult<ApplicationUser, SyncthingWeb.Commands.Implementation.Users.GetUsersQuery>
     @{
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
@@ -30,21 +32,19 @@
                                     {
                                         <a class="btn btn-info btn-sm" href="@Url.Action("Allowed", new {id = user.Id})">Folders</a>
 
-                                         if (user.IsEnabled)
-                                         {
-                                             using (Html.BeginForm("Deactive", "Home", new {area = "Users"}, FormMethod.Post, new {@class = "inline"}))
-                                             {
+                                        if (user.IsEnabled)
+                                        {
+                                            using (Html.BeginForm("Deactive", "Home", new {area = "Users"}, FormMethod.Post, true, new { @class = "inline" }))
+                                            {
                                                  @Html.Hidden("id", user.Id)
-                                                 @Html.AntiForgeryToken()
                                                  <button class="btn btn-warning btn-sm" type="submit">Deactive</button>
                                              }
                                          }
                                          else
                                          {
-                                             using (Html.BeginForm("Active", "Home", new {area = "Users"}, FormMethod.Post, new {@class = "inline"}))
+                                             using (Html.BeginForm("Active", "Home", new {area = "Users"}, FormMethod.Post, true, new {@class = "inline"}))
                                              {
                                                  @Html.Hidden("id", user.Id)
-                                                 @Html.AntiForgeryToken()
                                                  <button class="btn btn-success btn-sm" type="submit">Active</button>
                                             }
                                         }

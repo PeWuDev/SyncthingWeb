@@ -16,7 +16,7 @@ using SyncthingWebUI.Areas.Users.Permissions;
 
 namespace SyncthingWeb.Areas.Users.Controllers
 {
-    [Authorize]
+    [Authorize, Area("Users")]
     public class ManageController : ExtendedController
     {
         private readonly UserManager<ApplicationUser> _userManager;
