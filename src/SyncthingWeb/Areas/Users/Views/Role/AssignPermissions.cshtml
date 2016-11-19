@@ -1,0 +1,60 @@
+﻿
+@using System.Threading.Tasks
+@using SyncthingWeb.Areas.Users.Models
+@model SyncthingWeb.Areas.Users.Models.AssignPermissionsToRoleViewModel
+
+@{
+    ViewBag.Title = "Assign permissions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var counter = 0;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("AssignPermissions", "Role", new { area = "Admin" }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.RoleId)
+            @Html.HiddenFor(m => m.RoleName)
+
+            foreach (var permGroup in Model.Perms.GroupBy(p => p.Group))
+            {
+                <div class="box box-info">
+                    <div class="box-header">
+                        <h3 class="box-title">@permGroup.Key</h3>
+                    </div>
+                    <div class="box-body">
+                        @foreach (var perm in permGroup)
+                        {
+                            @Html.Hidden("Perms[" + counter + "].Name", @perm.Name)
+                            @Html.Hidden("Perms[" + counter + "].Group", @perm.Group)
+                            @Html.Hidden("Perms[" + counter + "].Description", @perm.Description)
+                            @Html.Hidden("Perms[" + counter + "].Title", @perm.Title)
+
+                            <div class="form-group">
+                                <label>@perm.Title</label>
+
+                                @Html.CheckBox("Perms[" + counter + "].Attached", @perm.Attached)
+                                <br />
+                                <i>@perm.Description</i>
+                            </div>
+
+                            counter += 1;
+                        }
+                    </div>
+                </div>
+
+            }
+
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Summary</h3>
+                </div>
+                <div class="box-footer">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

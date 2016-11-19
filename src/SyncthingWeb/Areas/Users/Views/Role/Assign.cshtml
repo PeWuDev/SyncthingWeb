@@ -1,0 +1,156 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@{
+    ViewBag.Title = "Assign users to role";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var roleId = (string)this.ViewBag.RoleId;
+}
+
+<style>
+    .fa.fa-remove {
+        cursor: pointer;
+    }
+</style>
+
+
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="box box-info">
+            @Html.AntiForgeryToken()
+            <table data-table="" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr data-row="" data-id="@u.Id">
+                        <td>@u.UserName</td>
+                        <td>
+                            <i class="fa fa-remove text-danger" data-remove="" data-hide-load=""></i>
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td>
+                        <select id="newSelect" class="form-control"></select>
+                    </td>
+                    <td>
+                        <button type="button" data-add="" class="btn btn-success btn-sm">Add</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="well" data-no-rows="">
+                <p>It is lonely here. Add some users.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    //TODO bundles
+    <script src="~/lib/select2/dist/js/select2.js"></script>
+    <link href="~/lib/select2/dist/css/select2.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+
+        if($("[data-row]").length > 0) {
+            $("[data-no-rows]").hide();
+        }
+
+        $("#newSelect").select2({
+            ajax: {
+                url: "@Url.Action("ToAssign")",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term.
+                        roleId: "@roleId"
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2,
+        });
+
+        $("[data-add]").click(function() {
+            var userId = $("#newSelect").val();
+            var userName = $("#newSelect").text();
+
+            if (!userId) {
+                return;
+            }
+
+            if ($("tr[data-id='" + userId + "']").length > 0) {
+                window.notification.notifyError("User already added to current role.");
+                return;
+            }
+
+            var rowTr = $("<tr></tr>").attr("data-row", "").attr("data-id", userId);
+            rowTr.append($("<td></td>").html(userName));
+            rowTr.append($("<td></td>").html($("<i></i>").addClass("fa fa-remove text-danger").attr("data-remove", "").attr("data-hide-load", "")));
+
+
+            var rows = $("[data-table] [data-row]");
+            if (rows.length > 0) {
+                rows.last().after(rowTr);
+            } else {
+
+                $("[data-table] tbody").prepend(rowTr);
+                $("[data-no-rows]").hide();
+            }
+
+            rowTr.find("[data-hide-load]").hide();
+
+            $.post("@Url.Action("Assign")", {
+                roleId: "@roleId",
+                userId: userId,
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            }, function() {
+                rowTr.find("[data-hide-load]").show();
+            }).fail(function() {
+                rowTr.remove();
+                window.notification.notifyError("Error while adding user " + userName + " to role");
+            });
+        });
+
+
+
+        $("[data-table]").delegate("[data-remove]", "click", function() {
+            var toRemove = $(this).closest("tr");
+            var userId = toRemove.attr("data-id");
+
+            toRemove.hide();
+            $.post("@Url.Action("Deassign")", {
+                userId: userId,
+                roleId: "@roleId",
+                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+            }, function() {
+                toRemove.remove();
+
+
+                if ($("[data-row]").length == 0) {
+                    $("[data-no-rows]").show();
+                }
+            }).fail(function() {
+                toRemove.show();
+                window.notification.notifyError("Error while removing user from role.");
+            });
+        });
+</script>
+}

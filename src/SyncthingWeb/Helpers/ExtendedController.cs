@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SyncthingWeb.Authorization;
 using SyncthingWeb.Commands;
+using SyncthingWeb.Logging;
 using SyncthingWeb.Notifications;
 
 namespace SyncthingWeb.Helpers
@@ -17,7 +18,7 @@ namespace SyncthingWeb.Helpers
         public IAuthorizer Authorizer { get; set; }
 
 
-        //TODO public ILogger Logger { get; set; }
+        public ILogger Logger { get; set; } = NullLogger.Instance;
 
         protected virtual ITransaction BeginTransaction()
         {
@@ -27,7 +28,6 @@ namespace SyncthingWeb.Helpers
         protected virtual ITransaction BeginIsolatedTransaction()
         {
             return this.Transactional.Begin(IsolationLevel.Snapshot);
-
         }
     }
 }
