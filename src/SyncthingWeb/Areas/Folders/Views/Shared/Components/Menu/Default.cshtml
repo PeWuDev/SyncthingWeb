@@ -1,0 +1,23 @@
+﻿
+@using System.Threading.Tasks
+@using SyncthingWeb.Extensions
+
+@model SyncthingWeb.Areas.Folders.ViewComponents.FoldersMenuViewComponent.MenuViewComponentParam
+
+@{
+    var allowed = Model.AllowedFolder;
+}
+
+<li class="treeview">
+    <a href="#"><i class="fa fa-folder-o"></i> <span>Folders</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <ul class="treeview-menu">
+
+        @foreach (var folder in Model.Context.Folders)
+        {
+            if (allowed == null || allowed.Contains(folder.Id))
+            {
+                <li class="@Html.ActivePage("Home", "Index", "Folders")"><a href="@Url.Action("Index", "Home", new {area = "Folders", id = folder.Id, path = ""})">@folder.Id</a></li>
+            }
+        }
+    </ul>
+</li>

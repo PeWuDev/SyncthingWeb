@@ -1,0 +1,145 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Areas.Folders.Helpers
+@using SyncthingWeb.Areas.Folders.Models
+@using SyncthingWeb.Extensions
+@using SyncthingWeb.Models
+@model SyncthingWeb.Areas.Folders.Models.StorageContentViewModel
+
+@{
+    ViewBag.Title = "Folders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var shared = (Dictionary<string, SharedEntry>)ViewBag.Shared;
+}
+
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+
+
+        @if (Model.Directories.Any() || Model.Files.Any())
+        {
+            var directoriesGrouped = Model.Directories.DivideIntoRows(3);
+
+
+            foreach (var dirRow in directoriesGrouped.Select(d => d.ToList()))
+            {
+                <div class="row">
+                    @for (var i = 0; i < 4; i++)
+                    {
+
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+
+                            @if (i < dirRow.Count)
+                            {
+                                var dir = dirRow[i];
+
+                                <div class="info-box">
+                                    <div class="box-tools pull-right">
+                                        @*<span data-toggle="tooltip" title="3 New Messages" class="badge bg-red">3</span>
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                                <i class="fa fa-comments"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+
+                                        <button data-url="@Url.Action("GetFolder", "Home", new {id = Model.FolderId, path = Model.PathFor(dir.Name)})" type="button" class="btn btn-box-tool"><i class="fa fa-download"></i></button>
+
+                                        @*<a target="_blank" href="@Url.Action("GetFile", "Home", new { id = Model.FolderId, path = Model.PathFor(file.Name) })" class="info-box-text pull-right" style="font-size: 1em"><i class="fa fa-download"></i></a><span class=""></span>*@
+                                    </div>
+
+                                    <span class="info-box-icon bg-yellow"><i class="fa  fa-folder-open-o"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@dir.ModifiedDate.ToString("D")</span>
+                                        <a href="@Url.Action("Index", "Home", new {id = Model.FolderId, path = Model.PathFor(dir.Name)})" class="info-box-number">@dir.Name</a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            var filesGrouped = Model.Files.DivideIntoRows(3);
+
+            foreach (var filesRow in filesGrouped.Select(d => d.ToList()))
+            {
+                <div class="row">
+                    @for (var i = 0; i < 4; i++)
+                    {
+
+                        <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+
+                            @if (i < filesRow.Count)
+                            {
+                                var file = filesRow[i];
+                                var filePath = Model.PathFor(file.Name);
+                                <div class="info-box">
+                                    <div class="box-tools pull-right">
+                                        @*<span data-toggle="tooltip" title="3 New Messages" class="badge bg-red">3</span>
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                                <i class="fa fa-comments"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+
+                                        @if (ViewBag.CanShare)
+                                        {
+                                            <button data-no-new-window="true" data-url="@Url.Action("Share", "Common", new {area = "Share", id = Model.FolderId, path = filePath})" type="button" class="btn btn-box-tool"><i class="fa fa-share"></i></button>
+                                        }
+                                        <button data-url="@Url.Action("GetFile", "Home", new {id = Model.FolderId, path = filePath})" type="button" class="btn btn-box-tool"><i class="fa fa-download"></i></button>
+
+                                        @*<a target="_blank" href="@Url.Action("GetFile", "Home", new { id = Model.FolderId, path = Model.PathFor(file.Name) })" class="info-box-text pull-right" style="font-size: 1em"><i class="fa fa-download"></i></a><span class=""></span>*@
+                                    </div>
+
+                                    <span class="info-box-icon bg-green"><i class="fa fa-@FileEntryIconMaper.Map(file)"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@file.ModifiedDate.ToString("D")</span>
+                                        <span class="info-box-text">@FileSize.GetBytesReadable(file.Length)</span>
+                                        <span class="info-box-number">@file.Name</span>
+                                        @if (shared.ContainsKey(filePath) && shared[filePath] != null)
+                                        {
+                                            <span class="info-box-text pull-right" style="cursor: pointer" data-no-new-window="true" data-url="@Url.Action("SharePreview", "Common", new {area = "Share", id = Model.FolderId, path = filePath})">Shared</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+        }
+        else
+        {
+            <div class="box box-info">
+            <div class="box-header">
+                <h4>Ups...</h4>
+            </div>
+                <div class="box-body">
+                    <p>There is no folder or files in here.</p>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section scripts
+{
+    
+<script type="text/javascript">
+        $("[data-url]").click(function () {
+            if ($(this).attr("data-no-new-window") === "true") {
+                window.location.href = $(this).attr("data-url");
+            } else {
+                window.open($(this).attr("data-url"));
+            }
+        });
+</script>
+}
