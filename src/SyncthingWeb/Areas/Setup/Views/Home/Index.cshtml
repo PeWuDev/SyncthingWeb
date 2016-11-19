@@ -1,0 +1,53 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Areas.Setup.Models
+@model SyncthingWeb.Areas.Setup.Models.SetupViewModel
+
+@{
+    ViewBag.Title = "Setup";
+    Layout = "~/Views/Shared/_SetupLayout.cshtml";
+}
+<div class="login-box-body">
+    <p class="login-box-msg">Provide base info for your site</p>
+
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+    {
+
+
+        <div class="form-group has-feedback">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+        <div class="form-group has-feedback">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        <div class="form-group has-feedback">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+        </div>
+
+        <div class="form-group has-feedback">
+            @Html.TextBoxFor(m => m.SyncthingConfigFile, new { @class = "form-control", placeholder = "Syncthing config file" })
+            <p>Note: you must allow IIS to read configuration file.</p>
+        </div>
+
+        <div class="form-group has-feedback">
+            <label> @Html.CheckBoxFor(m => m.EnableRegistration) Enable registration</label>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-8">
+                @Html.AntiForgeryToken()
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-4">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Save</button>
+            </div>
+            <!-- /.col -->
+        </div>
+    }
+
+</div>

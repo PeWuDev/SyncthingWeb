@@ -9,6 +9,7 @@ using SyncthingWeb.Data;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using HomeController = SyncthingWeb.Areas.Setup.Controllers.HomeController;
 
 namespace SyncthingWeb.Attributes
 {
@@ -26,7 +27,7 @@ namespace SyncthingWeb.Attributes
             var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
             if (actionDescriptor == null) return;
 
-            if (Equals(actionDescriptor.ControllerTypeInfo, typeof(HomeController).GetTypeInfo()))
+            if (Equals(actionDescriptor.ControllerTypeInfo, typeof( HomeController).GetTypeInfo()))
             {
                 return;
             }
