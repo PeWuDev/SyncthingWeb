@@ -4,3 +4,11 @@
 
 ## Attention
 Under development
+
+## Port status
+About 90% - most of features tested on Windows.
+
+TODO:
+* Linux test
+* SQLite integration
+* Startup scripts
