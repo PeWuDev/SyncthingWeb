@@ -5,14 +5,25 @@
 @{
     ViewBag.Title = "Setup";
     Layout = "~/Views/Shared/_SetupLayout.cshtml";
+
+    var isHttps = Url.ActionContext.HttpContext.Request.IsHttps;
 }
 <div class="login-box-body">
     <p class="login-box-msg">Provide base info for your site</p>
 
     @using (Html.BeginForm("Index", "Home", FormMethod.Post))
     {
+        if (!isHttps)
+        {
+                <div class="callout callout-danger">
+                    <h4>Unsecure protcol</h4>
 
-
+                    <p>
+                        We have detected that your site is not running under <b>https</b>. Its highly recommended 
+                        to configure https connection to this site.
+                    </p>
+                </div>
+        }
         <div class="form-group has-feedback">
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
