@@ -1,7 +1,8 @@
-﻿namespace SyncthingWebUI.Areas.Users.Permissions
+﻿using SyncthingWeb.Permissions;
+
+namespace SyncthingWebUI.Areas.Users.Permissions
 {
     using System.Collections.Generic;
-    using SyncthingWebUI.Permissions;
 
     internal class RolePermissions : PermissionProviderBase
     {

@@ -8,7 +8,7 @@ namespace SyncthingWeb.Bus
         {
             base.Load(builder);
 
-            builder.RegisterType<EventBus>().As<EventBus>().SingleInstance();
+            builder.RegisterType<EventBus>().As<IEventBus>().SingleInstance();
         }
     }
 }

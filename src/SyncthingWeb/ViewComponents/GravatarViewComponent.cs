@@ -8,19 +8,20 @@ namespace SyncthingWeb.ViewComponents
 {
     public class GravatarViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(string userEmail, int size, string additionalClass = null)
+        public Task<IViewComponentResult> InvokeAsync(string userEmail, int size, string additionalClass = null)
         {
             if (string.IsNullOrEmpty(userEmail))
             {
-                return Content(string.Empty);
+                return Task.FromResult<IViewComponentResult>(Content(string.Empty));
             }
 
-            return View(new GravatarViewComponentParam
+            var view = View(new GravatarViewComponentParam
             {
                 AdditionalClass = additionalClass,
                 Size = size,
                 EmailHash = GetMd5Hash(MD5.Create(), userEmail)
             });
+            return Task.FromResult<IViewComponentResult>(view);
         }
 
         private static string GetMd5Hash(HashAlgorithm hashAlg, string input)

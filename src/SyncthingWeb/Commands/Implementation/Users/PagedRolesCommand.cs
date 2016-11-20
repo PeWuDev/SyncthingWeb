@@ -14,11 +14,11 @@ namespace SyncthingWeb.Commands.Implementation.Users
             this.Query = query;
             return this;
         }
-        protected override async Task<IOrderedQueryable<IdentityRole>> GetQueryable()
+        protected override Task<IOrderedQueryable<IdentityRole>> GetQueryable()
         {
             var q = this.Context.Roles.AsNoTracking();
 
-            return q.OrderBy(r => r.Id);
+            return Task.FromResult(q.OrderBy(r => r.Id));
         }
     }
 

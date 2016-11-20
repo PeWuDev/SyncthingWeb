@@ -10,6 +10,7 @@ using SyncthingWeb.Syncthing;
 
 namespace SyncthingWeb.Areas.Folders.ViewComponents
 {
+    [Area("Folders")]
     public class FoldersMenuViewComponent : ViewComponent
     {
         private readonly ISyncthingContextFactory syncthingContextFactory;
@@ -17,11 +18,12 @@ namespace SyncthingWeb.Areas.Folders.ViewComponents
         private readonly ICommandFactory commandFactory;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public FoldersMenuViewComponent(ISyncthingContextFactory syncthingContextFactory, IAuthorizer authorizer, ICommandFactory commandFactory)
+        public FoldersMenuViewComponent(ISyncthingContextFactory syncthingContextFactory, IAuthorizer authorizer, ICommandFactory commandFactory, UserManager<ApplicationUser> userManager)
         {
             this.syncthingContextFactory = syncthingContextFactory;
             this.authorizer = authorizer;
             this.commandFactory = commandFactory;
+            _userManager = userManager;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()

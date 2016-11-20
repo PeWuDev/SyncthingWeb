@@ -8,7 +8,10 @@ namespace SyncthingWeb.Areas.Folders.Helpers
 {
     public class FolderControllerBase :ExtendedController
     {
-        public UserManager<ApplicationUser> UserManager { get; set; }
+        public UserManager<ApplicationUser> UserManager
+            =>
+            (UserManager<ApplicationUser>)
+            this.HttpContext.RequestServices.GetService(typeof(UserManager<ApplicationUser>));
 
         public async Task<bool> HasAccess(string folderId)
         {

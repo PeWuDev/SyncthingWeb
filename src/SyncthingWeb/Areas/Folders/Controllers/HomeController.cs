@@ -62,7 +62,8 @@ namespace SyncthingWeb.Areas.Folders.Controllers
 
             var downloadableFile = await this.fileFetcher.GetFileToDownloadAsync(id, path);
 
-            return this.File(downloadableFile.FullName, downloadableFile.MimeType, path.Split(Path.DirectorySeparatorChar).Last());
+            return this.PhysicalFile(downloadableFile.FullName, downloadableFile.MimeType,
+                path.Split(Path.DirectorySeparatorChar).Last());
         }
 
         public  async Task<ActionResult> GetFolder(string id, string path)
@@ -76,7 +77,7 @@ namespace SyncthingWeb.Areas.Folders.Controllers
 
             var zipFolder = await this.fileFetcher.DownloadableFolder(id, path);
 
-            return this.File(zipFolder.FullName, zipFolder.MimeType, (path.Split(Path.DirectorySeparatorChar).LastOrDefault() ?? id) + ".zip");
+            return this.PhysicalFile(zipFolder.FullName, zipFolder.MimeType, (path.Split(Path.DirectorySeparatorChar).LastOrDefault() ?? id) + ".zip");
         }
 
         private void BuildBreadcrumb(string id, string path)

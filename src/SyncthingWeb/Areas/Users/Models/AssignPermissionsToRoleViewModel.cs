@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using SyncthingWebUI.Permissions;
+using SyncthingWeb.Permissions;
 
 namespace SyncthingWeb.Areas.Users.Models
 {

@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SyncthingWeb.Areas.Folders.Helpers;
 using SyncthingWeb.Areas.Folders.Services;
+using SyncthingWeb.Bus;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Folders;
 using SyncthingWeb.Searching;
 
 namespace SyncthingWeb.Areas.Folders.Directors
 {
-    public class FileSearchDirectory : ISearchProvider
+    public class FileSearchDirectory : IEventHandler<ISearchCollector>
     {
         private readonly ISyncthingFileFetcher fileFetcher;
         private readonly ICommandFactory commandFactory;
@@ -27,23 +28,22 @@ namespace SyncthingWeb.Areas.Folders.Directors
             this.actionContextAccessor = actionContextAccessor;
         }
 
-        public async Task SearchAsync(string term, string user, ICollection<SearchResultItem> collection)
+        public async Task HandleAsync(ISearchCollector @event)
         {
-            var allowed = await this.commandFactory.Create<GetAllowedFoldersCommand>().Setup(user).GetAsync();
+            var allowed = await this.commandFactory.Create<GetAllowedFoldersCommand>().Setup(@event.User).GetAsync();
 
 
             var urlHelper = new UrlHelper(this.actionContextAccessor.ActionContext);
-            foreach (var fe in await this.fileFetcher.SearchFilesAsync(allowed.Keys.ToList(), term))
+            foreach (var fe in await this.fileFetcher.SearchFilesAsync(allowed.Keys.ToList(), @event.Term))
             {
                 var url = urlHelper.Action(new UrlActionContext
                 {
                     Controller = "Home",
                     Action = "Index",
-                    Values = new {area = "Folders", id = fe.FolderId, path = fe.Path}
+                    Values = new { area = "Folders", id = fe.FolderId, path = fe.Path }
                 });
-                collection.Add(new SearchResultItem(fe.Name, fe.FolderId, FileEntryIconMaper.Map(fe), "bg-yellow", url));
+                @event.Add(new SearchResultItem(fe.Name, fe.FolderId, FileEntryIconMaper.Map(fe), "bg-yellow", url));
             }
-
 
         }
     }

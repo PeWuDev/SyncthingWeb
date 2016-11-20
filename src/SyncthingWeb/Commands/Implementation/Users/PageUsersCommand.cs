@@ -15,7 +15,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
             return this;
         }
 
-        protected override async Task<IOrderedQueryable<ApplicationUser>> GetQueryable()
+        protected override  Task<IOrderedQueryable<ApplicationUser>> GetQueryable()
         {
             var q = this.Context.Users.AsNoTracking();
 
@@ -26,7 +26,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
                 q = q.Where(u => !u.Roles.Any(r => this.Query.ExcludedRoles.Contains(r.RoleId)));
             }
 
-            return q.OrderBy(u => u.Id);
+            return Task.FromResult(q.OrderBy(u => u.Id));
         }
     }
 

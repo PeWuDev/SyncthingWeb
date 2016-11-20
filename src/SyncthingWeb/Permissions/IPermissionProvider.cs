@@ -1,26 +1,26 @@
-﻿namespace SyncthingWebUI.Permissions
+﻿using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using SyncthingWeb.Bus;
+
+namespace SyncthingWeb.Permissions
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    internal interface IPermissionProvider /*: IEvent */
+    internal abstract class PermissionProviderBase : IEventHandler<IPermissionCollector>
     {
-        void Register(ICollection<Permission> permissions);
-    }
 
-    internal abstract class PermissionProviderBase : IPermissionProvider
-    {
-        public virtual void Register(ICollection<Permission> permissions)
+        public Task HandleAsync(IPermissionCollector @event)
         {
+
             var type = this.GetType();
             var permFields =
                 type.GetFields(BindingFlags.Public | BindingFlags.Static).Where(t => t.FieldType == typeof(Permission));
 
             foreach (var value in permFields.Select(permField => permField.GetValue(this)).Cast<Permission>())
             {
-                permissions.Add(value);
+                @event.Add(value);
             }
+
+            return Task.FromResult(0);
         }
     }
 }

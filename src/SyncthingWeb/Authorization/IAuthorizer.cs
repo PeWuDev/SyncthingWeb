@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SyncthingWebUI.Permissions;
+using SyncthingWeb.Permissions;
 
 namespace SyncthingWeb.Authorization
 {

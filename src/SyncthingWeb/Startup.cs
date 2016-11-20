@@ -11,7 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SyncthingWeb.Areas.Devices.Permissions;
+using SyncthingWeb.Areas.Share.Providers;
 using SyncthingWeb.Attributes;
+using SyncthingWeb.Authorization;
 using SyncthingWeb.Bus;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
@@ -21,6 +24,9 @@ using SyncthingWeb.Modules;
 using SyncthingWeb.Permissions;
 using SyncthingWeb.Services;
 using SyncthingWeb.Syncthing;
+using SyncthingWebUI.Areas.Folders.Module;
+using SyncthingWebUI.Areas.Users.Permissions;
+using SyncthingWebUI.Authorization;
 
 namespace SyncthingWeb
 {
@@ -87,6 +93,10 @@ namespace SyncthingWeb
             builder.RegisterModule<CommandsModule>();
             builder.RegisterModule<EventBusModule>();
             builder.RegisterModule<SyncthingModule>();
+            builder.RegisterModule<AuthorizationModule>();
+            builder.RegisterModule<FoldersModule>();
+
+            ConfigureEvents(builder);
 
             ApplicationContainer = builder.Build();
 
@@ -134,6 +144,11 @@ namespace SyncthingWeb
 
         public void ConfigureEvents(ContainerBuilder builder)
         {
+            builder.RegisterType<ShareProvider>()
+             .As<IEventHandler<IShareCollector>>()
+             .InstancePerDependency()
+             .PropertiesAutowired();
+
             builder.RegisterType<DefaultPermissionResolver>()
                 .As<IEventHandler<AddedUserRoleEvent>>()
                 .InstancePerDependency()
@@ -141,6 +156,21 @@ namespace SyncthingWeb
 
             builder.RegisterType<DefaultPermissionResolver>()
                 .As<IEventHandler<RemovedUserRoleEvent>>()
+                .InstancePerDependency()
+                .PropertiesAutowired();
+
+            builder.RegisterType<DevicePermissions>()
+                .As<IEventHandler<IPermissionCollector>>()
+                .InstancePerDependency()
+                .PropertiesAutowired();
+
+            builder.RegisterType<RolePermissions>()
+                .As<IEventHandler<IPermissionCollector>>()
+                .InstancePerDependency()
+                .PropertiesAutowired();
+
+            builder.RegisterType<UserPermissions>()
+                .As<IEventHandler<IPermissionCollector>>()
                 .InstancePerDependency()
                 .PropertiesAutowired();
         }

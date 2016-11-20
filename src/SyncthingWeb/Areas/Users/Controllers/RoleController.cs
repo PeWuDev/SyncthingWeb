@@ -10,7 +10,6 @@ using SyncthingWeb.Commands.Implementation.Users;
 using SyncthingWeb.Helpers;
 using SyncthingWeb.Permissions;
 using SyncthingWebUI.Areas.Users.Permissions;
-using SyncthingWebUI.Permissions;
 
 namespace SyncthingWeb.Areas.Users.Controllers
 {

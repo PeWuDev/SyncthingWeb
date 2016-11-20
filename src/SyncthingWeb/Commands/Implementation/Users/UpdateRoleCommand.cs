@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SyncthingWeb.Extensions;
 
 namespace SyncthingWeb.Commands.Implementation.Users
 {
@@ -16,8 +17,7 @@ namespace SyncthingWeb.Commands.Implementation.Users
 
         public override Task ExecuteAsync()
         {
-            if (this.Entity.Id == null) this.Context.Roles.Add(this.Entity);
-            else this.Context.Roles.Update(this.Entity);
+            this.Context.AddOrUpdate(this.Entity);
             return this.Context.SaveChangesAsync();
         }
     }

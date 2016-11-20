@@ -16,11 +16,11 @@ namespace SyncthingWeb.ViewComponents
             this.notification = notification;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public Task<IViewComponentResult> InvokeAsync()
         {
             var all = this.notification.Notifications;
 
-            return View(all);
+            return Task.FromResult<IViewComponentResult>(View(all));
         }
     }
 }

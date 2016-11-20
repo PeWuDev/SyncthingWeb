@@ -12,10 +12,10 @@ namespace SyncthingWeb.Helpers
 {
     public class ExtendedController : Controller
     {
-        public INotification Notifications { get; set; }
-        public ITranManager Transactional { get; set; }
-        public ICommandFactory CommandFactory { get; set; }
-        public IAuthorizer Authorizer { get; set; }
+        public INotification Notifications => (INotification)this.HttpContext.RequestServices.GetService(typeof(INotification));
+        public ITranManager Transactional => (ITranManager)this.HttpContext.RequestServices.GetService(typeof(ITranManager));
+        public ICommandFactory CommandFactory=> (ICommandFactory)this.HttpContext.RequestServices.GetService(typeof(ICommandFactory));
+        public IAuthorizer Authorizer => (IAuthorizer)this.HttpContext.RequestServices.GetService(typeof(IAuthorizer));
 
 
         public ILogger Logger { get; set; } = NullLogger.Instance;

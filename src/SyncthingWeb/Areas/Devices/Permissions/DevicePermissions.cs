@@ -1,4 +1,4 @@
-﻿using SyncthingWebUI.Permissions;
+﻿using SyncthingWeb.Permissions;
 
 namespace SyncthingWeb.Areas.Devices.Permissions
 {

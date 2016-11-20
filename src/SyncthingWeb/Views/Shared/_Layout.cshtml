@@ -98,8 +98,8 @@
                 </form>
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
-
-                @* TODO @Html.Action("MainMenu", "Layout", new { area = "" })*@
+                
+                @await Component.InvokeAsync("MainMenu")
 
             </section>
             <!-- /.sidebar -->

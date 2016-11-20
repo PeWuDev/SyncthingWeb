@@ -1,0 +1,21 @@
+﻿@using SyncthingWeb.Extensions
+@model int
+
+@{
+    ViewBag.Title = "Congratulations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="box box-info">
+            <div class="box-body">
+                <p>You have succesffuly shared file "@ViewBag.SharedEntry.Path" in @ViewBag.SharedEntry.Folder.FolderId folder.</p>
+                <p>Here is your public link</p>
+
+                <input readonly="readonly" class="form-control" value="@Url.AbsoluteAction("Index", "PasswordProtected", new { area ="Share", id = Model})" />
+            </div>
+        </div>
+    </div>
+</div>
