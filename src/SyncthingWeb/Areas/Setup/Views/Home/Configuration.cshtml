@@ -7,12 +7,11 @@
 }
 
 
-<form method="get" asp-action="Configuration" asp-controller="Home" asp-area="Setup">
+<form method="get" asp-action="Configuration" asp-controller="Home" asp-area="Setup" asp-antiforgery="true">
 
     <div class="row">
         <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
             <div class="box box-info">
-                @Html.AntiForgeryToken()
                 <div class="box-header">
                     <h4>Syncthing</h4>
                 </div>
@@ -20,7 +19,7 @@
                     <div class="form-group">
                         <label>Syncthing configuration file</label>
                         <input asp-for="SyncthingConfigPath" class="form-control" />
-                        @Html.ValidationMessageFor(m => m.SyncthingConfigPath)
+                        <span asp-validation-for="SyncthingConfigPath"></span>
                     </div>
 
                 </div>
@@ -40,7 +39,7 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label>@Html.CheckBoxFor(m => m.EnableRegistration) Enable registration</label>
+                        <label><input type="checkbox" asp-for="EnableRegistration"/> Enable registration</label>
                     </div>
                 </div>
                 <div class="box-footer">
