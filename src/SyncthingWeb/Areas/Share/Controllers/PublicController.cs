@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SyncthingWeb.Areas.Share.Helpers;
 using SyncthingWeb.Areas.Share.Permissions;
 using SyncthingWeb.Areas.Share.Providers.Implementation;
@@ -11,6 +12,10 @@ namespace SyncthingWeb.Areas.Share.Controllers
     [Area("Share")]
     public class PublicController : ShareControllerBase
     {
+        public PublicController(ILogger<ShareControllerBase> logger) : base(logger)
+        {
+        }
+
         public override async Task<ActionResult> Configure(string id, string path)
         {
             if (!await this.Authorizer.AuthorizeAsync(SharePermissions.Allow)) return new UnauthorizedResult();

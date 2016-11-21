@@ -97,7 +97,7 @@ namespace SyncthingWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-                this.Logger.ErrorException(ex, "Errpr while updating role.");
+                //*this.Logger.ErrorException(ex, "Errpr while updating role.");
                 this.Notifications.NotifyError("Unhandled exception while saving role.");
 
                 return this.View(entity);
@@ -141,7 +141,7 @@ namespace SyncthingWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-                this.Logger.ErrorException(ex, "Error while saving role permisisons.");
+                //TODO this.Logger.ErrorException(ex, "Error while saving role permisisons.");
                 this.Notifications.NotifyError("Unhandled exception while saving permissions for role. Try again later.");
                 return this.View(model);
             }

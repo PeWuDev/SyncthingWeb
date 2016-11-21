@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SyncthingWeb.Authorization;
 using SyncthingWeb.Commands;
-using SyncthingWeb.Logging;
 using SyncthingWeb.Notifications;
 
 namespace SyncthingWeb.Helpers
@@ -16,10 +15,7 @@ namespace SyncthingWeb.Helpers
         public ITranManager Transactional => (ITranManager)this.HttpContext.RequestServices.GetService(typeof(ITranManager));
         public ICommandFactory CommandFactory=> (ICommandFactory)this.HttpContext.RequestServices.GetService(typeof(ICommandFactory));
         public IAuthorizer Authorizer => (IAuthorizer)this.HttpContext.RequestServices.GetService(typeof(IAuthorizer));
-
-
-        public ILogger Logger { get; set; } = NullLogger.Instance;
-
+        
         protected virtual ITransaction BeginTransaction()
         {
             return this.Transactional.Begin();

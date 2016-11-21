@@ -27,21 +27,23 @@ namespace Syncthing.Integration
             }
         }
 
-        public static Task<bool> TestAccess(string configPath)
+        public static Task<TestAccessResult> TestAccess(string configPath)
         {
             return Task.Factory.StartNew(() =>
             {
                 try
                 {
+                    if (!File.Exists(configPath)) return TestAccessResult.FileNotExists;
+
                     using (File.Open(configPath, FileMode.Open, FileAccess.Read))
                     {
                     }
 
-                    return true;
+                    return TestAccessResult.Ok;
                 }
                 catch
                 {
-                    return false;
+                    return TestAccessResult.Unknown;
                 }
             });
         }
@@ -95,6 +97,13 @@ namespace Syncthing.Integration
         public SyncthingDevice GetDevice(string deviceId)
         {
             return this.Devices.FirstOrDefault(d => d.Id == deviceId);
+        }
+
+        public enum TestAccessResult
+        {
+            Ok,
+            FileNotExists,
+            Unknown
         }
     }
 }

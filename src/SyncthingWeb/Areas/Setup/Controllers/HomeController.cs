@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Syncthing.Integration;
 using SyncthingWeb.Areas.Setup.Models;
 using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Helpers;
@@ -16,11 +18,13 @@ namespace SyncthingWeb.Areas.Setup.Controllers
     {
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public HomeController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<HomeController> logger)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -39,9 +43,11 @@ namespace SyncthingWeb.Areas.Setup.Controllers
                 return this.View(model);
             }
 
-            if (!await SyncthingContext.TestAccess(model.SyncthingConfigFile))
+            var testResult = await SyncthingContext.TestAccess(model.SyncthingConfigFile);
+            if (testResult != SyncthingContext.TestAccessResult.Ok)
             {
                 this.ModelState.AddModelError("SyncthingConfigFile", "No access to config file");
+                this.logger.LogError(SetupLoggingEvents.ConfigureApp, "Cannot access config file: {0}", testResult);
             }
 
             if (!ModelState.IsValid)
@@ -52,7 +58,7 @@ namespace SyncthingWeb.Areas.Setup.Controllers
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
             IdentityResult result;
 
-            // TODO this.Logger.Info("Creating super admin user \"{0}\"", model.Email);
+            this.logger.LogInformation(SetupLoggingEvents.ConfigureApp, "Creating super admin user \"{0}\"", model.Email);
             result = await this.userManager.CreateAsync(user, model.Password);
 
 

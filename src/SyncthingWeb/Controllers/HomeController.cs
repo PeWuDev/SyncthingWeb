@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Syncthing.Integration;
 using SyncthingWeb.Commands.Implementation.Folders;
 using SyncthingWeb.Commands.Implementation.SharedEntries;
 using SyncthingWeb.Helpers;

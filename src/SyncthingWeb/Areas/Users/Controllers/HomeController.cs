@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SyncthingWeb.Areas.Users.Models;
 using SyncthingWeb.Caching;
 using SyncthingWeb.Commands.Implementation.Settings;
@@ -18,11 +19,13 @@ namespace SyncthingWeb.Areas.Users.Controllers
     {
         private readonly ISyncthingContextFactory syncthingContextFactory;
         private readonly ICache cache;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(ISyncthingContextFactory syncthingContextFactory, ICache cache)
+        public HomeController(ISyncthingContextFactory syncthingContextFactory, ICache cache, ILogger<HomeController> logger)
         {
             this.syncthingContextFactory = syncthingContextFactory;
             this.cache = cache;
+            this.logger = logger;
         }
 
         public async Task<ActionResult> Index(GetUsersQuery query)
@@ -125,7 +128,7 @@ namespace SyncthingWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-                this.Logger.ErrorException(ex, "Error while assigning folders to user {0}", user);
+                this.logger.LogError("Error while assigning folders to user {0}", user);
                 this.Notifications.NotifyError("Error while saving allowed folders.");
                 return this.RedirectToAction("Allowed", new { id = user });
             }

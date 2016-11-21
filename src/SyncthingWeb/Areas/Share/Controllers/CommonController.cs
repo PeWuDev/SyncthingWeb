@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SyncthingWeb.Areas.Folders.Helpers;
 using SyncthingWeb.Areas.Share.Models;
 using SyncthingWeb.Areas.Share.Permissions;
@@ -18,10 +19,12 @@ namespace SyncthingWeb.Areas.Share.Controllers
     public class CommonController : FolderControllerBase
     {
         private readonly IEventBus eventBus;
+        private readonly ILogger<CommonController> logger;
 
-        public CommonController(IEventBus eventBus)
+        public CommonController(IEventBus eventBus, ILogger<CommonController> logger)
         {
             this.eventBus = eventBus;
+            this.logger = logger;
         }
 
         public async Task<ActionResult> Share(string id, string path)
@@ -31,7 +34,7 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (!await this.HasAccess(id))
             {
-                this.Logger.Error(
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
                     "Cannot share \"{0}\" in folder \"{1}\" - user \"{2}\" has not permission to that folder",
                     path, id, usrId);
                 return new UnauthorizedResult();
@@ -39,8 +42,8 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (!await this.Authorizer.AuthorizeAsync(SharePermissions.Allow))
             {
-                this.Logger.Error(
-                    "Cannot share \"{0}\" in folder \"{1}\" - user \"{2}\" has no permissions to share feature.",
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot share \"{0}\" in folder \"{1}\" - user \"{2}\" has not permission to that folder",
                     path, id, usrId);
                 return new UnauthorizedResult();
             }
@@ -62,16 +65,16 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (!await this.HasAccess(id))
             {
-                this.Logger.Error(
-                    "Cannot preview share for \"{0}\" in folder \"{1}\" - user \"{2}\" has not permission to that folder",
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot share \"{0}\" in folder \"{1}\" - user \"{2}\" has no permission to that folder",
                     path, id, usrId);
                 return new UnauthorizedResult();
             }
 
             if (!await this.Authorizer.AuthorizeAsync(SharePermissions.Allow))
             {
-                this.Logger.Error(
-                    "Cannot preview share for \"{0}\" in folder \"{1}\" - user \"{2}\" has no permissions to share feature.",
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot share \"{0}\" in folder \"{1}\" - user \"{2}\" has no permission to that folder",
                     path, id, usrId);
                 return new UnauthorizedResult();
             }
@@ -106,21 +109,24 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (!await this.HasAccess(sh.Folder.FolderId))
             {
-                this.Logger.Error("Cannot stop sharing {0}, user \"{1}\" has not access to folder {2}.", sh.Id, usrId,
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot stop sharing {0}, user \"{1}\" has not access to folder {2}.", sh.Id, usrId,
                     sh.Folder.FolderId);
                 return new UnauthorizedResult();
             }
 
             if (!await this.Authorizer.AuthorizeAsync(SharePermissions.Allow))
             {
-                this.Logger.Error("Cannot stop sharing {0}, user \"{1}\" has no permissions to share feature.", sh.Id,
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot stop sharing {0}, user \"{1}\" has no permissions to share feature.", sh.Id,
                     usrId);
                 return new UnauthorizedResult();
             }
 
             if (sh.OwnerId != usrId)
             {
-                this.Logger.Error("Cannot stop sharing {0} because user {1} is not owner of this entry.", sh.Id, usrId);
+                this.logger.LogError(ShareLoggingEvents.SharePermission,
+                    "Cannot stop sharing {0} because user {1} is not owner of this entry.", sh.Id, usrId);
                 return new UnauthorizedResult();
             }
 
