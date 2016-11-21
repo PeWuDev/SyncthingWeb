@@ -31,8 +31,8 @@
                 </div>
             </div>
             <div class="box-footer">
-                <a href="@Url.Action("Stop", "Common", new {Model.Entry.Id})" class="pull-right btn btn-danger">Stop</a>
-                <a href="@Url.Action("Folders", "Home", new { area= "Folders", id = Model.Entry.Folder.Id, path=  Model.Entry.GetDirectory() })" class="pull-right btn btn-info">Back</a>
+                <a asp-action="Stop" asp-controller="Common" asp-area="Share" asp-route-id="@Model.Entry.Id" class="pull-right btn btn-danger">Stop</a>
+                <a href="@Url.Action("Folders", "Home", new {area = "Folders", id = Model.Entry.Folder.Id, path = Model.Entry.GetDirectory()})" class="pull-right btn btn-info">Back</a>
             </div>
         </div>
     </div>
