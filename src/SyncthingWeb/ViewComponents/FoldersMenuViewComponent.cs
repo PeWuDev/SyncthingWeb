@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Syncthing.Integration;
 using SyncthingWeb.Authorization;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Folders;
 using SyncthingWeb.Models;
 using SyncthingWeb.Syncthing;
 
-namespace SyncthingWeb.Areas.Folders.ViewComponents
+namespace SyncthingWeb.ViewComponents
 {
     [Area("Folders")]
     public class FoldersMenuViewComponent : ViewComponent

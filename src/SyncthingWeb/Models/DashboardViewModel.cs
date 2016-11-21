@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Syncthing.Integration;
 using SyncthingWeb.Syncthing;
 
 namespace SyncthingWeb.Models

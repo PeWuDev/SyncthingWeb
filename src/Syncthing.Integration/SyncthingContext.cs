@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace SyncthingWeb.Syncthing
+namespace Syncthing.Integration
 {
     public class SyncthingContext
     {

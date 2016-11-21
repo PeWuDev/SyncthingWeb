@@ -8,6 +8,7 @@ using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Models;
 using System.Linq;
 using Autofac;
+using Syncthing.Integration;
 
 namespace SyncthingWeb.Syncthing
 {

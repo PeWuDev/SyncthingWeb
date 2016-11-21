@@ -1,8 +1,8 @@
-﻿namespace SyncthingWeb.Syncthing
-{
-    using System.Collections.Generic;
-    using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 
+namespace Syncthing.Integration
+{
     public class SyncthingDevice
     {
         private readonly HashSet<SyncthingFolder> folders;
