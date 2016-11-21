@@ -1,0 +1,138 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Syncthing
+@model ApplicationUser
+
+@{
+    ViewBag.Title = "Allow folders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="box box-info">
+            <div class="box-body">
+
+                @using (Html.BeginForm("Allowed", "Home", FormMethod.Post))
+                {
+
+                    <div class="row">
+                        <div class="col-md-8 col-lg-8 c`ol-sm-12 col-xs-12">
+                        </div>
+
+                        <div class="col-md-4 col-lg-4 c`ol-sm-12 col-xs-12">
+                            <input type="text" class="form-control" id="filterBox" placeholder="Search..." />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("user", Model.Id)
+
+                            <table class="table table-bordered table-striped table-hover filterable">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Folder</th>
+                                        @*<th>Can share</th>*@
+                                        <th>Devices No.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @{
+                                        var allowedIds = Model.Allowed.ToDictionary(a => a.Folder.FolderId);
+                                    }
+                                    @foreach (var fd in (IEnumerable<SyncthingFolder>)ViewBag.Folders)
+                                    {
+                                        <tr data-fd-id="@fd.Id">
+                                            <td>
+                                                <label>
+                                                    <input type="checkbox" data-allowed="" @(allowedIds.ContainsKey(fd.Id) ? "checked=\"checked\"" : "") />
+                                                    Allow
+                                                </label>
+                                            </td>
+
+                                            <td><span class="fa fa-folder-open-o"></span>&nbsp;@fd.Id</td>
+                                            @*<td>
+                                                    <input data-can-share="" type="checkbox" @(allowedIds.ContainsKey(fd.Id) && allowedIds[fd.Id].CanShare ? "checked=\"checked\"" : "") />
+                                                </td>*@
+                                            <td>@fd.Devices.Count()</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div style="display: none" data-selected=""></div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                                        }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $("form")
+            .submit(function () {
+                $("[data-selected]").html("");
+                var c = 0;
+                $("[data-fd-id]")
+                    .each(function () {
+                        var checkbox = $(this).find("[data-allowed]");
+                        if (!checkbox.is(":checked")) return;
+
+                        var fdId = $(this).attr("data-fd-id");
+
+                        $("[data-selected]")
+                            .append($("<input />")
+                                .attr("type", "hidden")
+                                .attr("name", "fd[" + c + "].FolderId")
+                                .attr("value", fdId));
+
+                        //var canShareCheckbox = $(this).find("[data-can-share]");
+                        //var canShare = canShareCheckbox.is(":checked");
+
+                        //$("[data-selected]")
+                        //    .append($("<input />")
+                        //        .attr("type", "hidden")
+                        //        .attr("name", "fd[" + c + "].CanShare")
+                        //        .attr("value", canShare));
+                        c++;
+                    });
+            });
+
+        $(document)
+            .ready(function () {
+                //add index column with all content.
+                $(".filterable tr:has(td)")
+                    .each(function () {
+                        var t = $(this).text().toLowerCase(); //all row text
+                        $("<td class='indexColumn'></td>")
+                            .hide()
+                            .text(t)
+                            .appendTo(this);
+                    }); //each tr
+                $("#filterBox")
+                    .keyup(function () {
+                        var s = $(this).val().toLowerCase().split(" ");
+                        //show all rows.
+                        $(".filterable tr:hidden").show();
+                        $.each(s,
+                            function () {
+                                $(".filterable tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+                            }); //each
+                    }); //key up.
+            });//document.ready
+    </script>
+}

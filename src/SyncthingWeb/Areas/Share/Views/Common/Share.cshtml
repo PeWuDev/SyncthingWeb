@@ -1,0 +1,42 @@
+﻿@using SyncthingWeb.Areas.Share.Models
+@model SyncthingWeb.Areas.Share.Models.CommonShareViewModel
+
+@{
+    ViewBag.Title = "Share an entry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+        <div class="box box-success">
+            <div class="box-header">
+                <h4>Share file</h4>
+            </div>
+            <div class="box-body">
+                <p>You are going to share <a href="@Url.Action("Index", "Home", new {area = "Folders", id = Model.FolderId, path = Model.GetDirPath()})">@Model.Path</a> in folder <a href="@Url.Action("Index", "Home", new {area = "Folders", id = Model.FolderId })">@Model.FolderId</a>. Select share provider first.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var sh in Model.Shares)
+{
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa @sh.IconCss"></span>&nbsp;&nbsp;@sh.Title</h3>
+                </div>
+                <div class="box-body">
+                    <p>@sh.Decription</p>
+                </div>
+
+                <div class="box-footer">
+                    <div class="pull-right">
+                        <a href="@Html.Raw(sh.ConfigureLink(Url.ActionContext,Model.FolderId, Model.Path))" class="btn btn-primary">Select</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,7 +1,7 @@
-﻿namespace SyncthingWebUI.Permissions
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace SyncthingWeb.Permissions
+{
     public class Permission
     {
         public Permission(string name, string title)

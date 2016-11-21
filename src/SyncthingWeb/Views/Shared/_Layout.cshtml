@@ -56,10 +56,10 @@
                             <!-- Menu Toggle Button -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!-- The user image in the navbar-->
-                                @await Component.InvokeAsync("Gravatar", new {  size = 160, userEmail = /* User.Identity.Name */ "patryk.wasiewicz@outlook.com", additionalClass = "user-image" })
+                                @await Component.InvokeAsync("Gravatar", new {  size = 160, userEmail =  User.Identity.Name , additionalClass = "user-image" })
                                 <span class="hidden-xs">@User.Identity.Name</span>
                             </a>
-                            @* TODO @Html.Action("UserSmallMenu", "Layout", new { area = "" })*@
+                            @await Component.InvokeAsync("UserSmallMenu")
                         </li>
                         <!-- Control Sidebar Toggle Button -->
                         @*<li>
@@ -98,8 +98,8 @@
                 </form>
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
-
-                @* TODO @Html.Action("MainMenu", "Layout", new { area = "" })*@
+                
+                @await Component.InvokeAsync("MainMenu")
 
             </section>
             <!-- /.sidebar -->

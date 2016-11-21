@@ -1,0 +1,34 @@
+﻿@model SyncthingWeb.Areas.Share.Controllers.PasswordProtectedController.UnlockViewModel
+
+@{
+    ViewBag.Title = "Unlock file";
+    Layout = "~/Views/Shared/_SetupLayout.cshtml";
+}
+
+
+<div class="login-box-body">
+    <p class="login-box-msg">You need to provide a password to unlock file</p>
+
+    @using (Html.BeginForm("Index", "PasswordProtected", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group has-feedback">
+            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-8">
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-4">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Save</button>
+            </div>
+            <!-- /.col -->
+        </div>
+    }
+
+</div>

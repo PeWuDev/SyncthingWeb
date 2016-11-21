@@ -1,0 +1,52 @@
+﻿
+@model GeneralSettings
+
+@{
+    ViewBag.Title = "Global configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form method="get" asp-action="Configuration" asp-controller="Home" asp-area="Setup" asp-antiforgery="true">
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <h4>Syncthing</h4>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label>Syncthing configuration file</label>
+                        <input asp-for="SyncthingConfigPath" class="form-control" />
+                        <span asp-validation-for="SyncthingConfigPath"></span>
+                    </div>
+
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="pull-right btn btn-primary">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <h4>Users</h4>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label><input type="checkbox" asp-for="EnableRegistration"/> Enable registration</label>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="pull-right btn btn-primary">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

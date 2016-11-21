@@ -1,0 +1,62 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Extensions
+@using SyncthingWeb.ViewComponents
+@model MainMenuModel
+
+
+<ul class="sidebar-menu">
+    <li class="header">Menu</li>
+
+    @await Component.InvokeAsync("FoldersMenu")
+
+    @{
+
+        var anyInDevices = Model.CanDeviceView;
+    }
+
+    @if (anyInDevices)
+    {
+        <li class="treeview">
+            <a href="#"><i class="fa fa-hdd-o"></i> <span>Devices</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+
+                @if (Model.CanDeviceView)
+                {
+                    <li class="@Html.ActivePage("Home", "Index", "Devices")"><a href="@Url.Action("Index", "Home", new {area = "Devices"})">List</a></li>
+                }
+            </ul>
+        </li>
+    }
+
+    @{
+        var anyInUsers = Model.CanUserView || Model.CanRoleView;
+    }
+
+    @if (anyInUsers)
+    {
+        <li class="treeview">
+            <a href="#"><i class="fa fa-users"></i> <span>Users</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+                @if (Model.CanUserView)
+                {
+                    <li class="@Html.ActivePage("Home", "Index", "Users")"><a href="@Url.Action("Index", "Home", new {area = "Users"})">List</a></li>
+                }
+
+                @if (Model.CanRoleView)
+                {
+                    <li class="@Html.ActivePage("Role", "Index", "Users")"><a href="@Url.Action("Index", "Role", new {area = "Users"})">Roles</a></li>
+                }
+            </ul>
+        </li>
+    }
+    @*<li class="treeview">
+            <a href="#"><i class="fa fa-users"></i> <span>Settings</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+                @if (Model.IsSuperAdmin)
+                {
+                    <li class="@Html.ActivePage("Home", "Configuraiton", "Setup")"><a href="@Url.Action("Configuration", "Home", new {area = "Setup"})">Global</a></li>
+                }
+            </ul>
+        </li>*@
+
+</ul><!-- /.sidebar-menu -->

@@ -2,6 +2,7 @@
   "userSecretsId": "aspnet-SyncthingWeb-d58d8c7f-f8b7-4c3d-94f3-66d1ee2ee957",
 
   "dependencies": {
+    "System.Security.Cryptography.Algorithms" : "4.3.0",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"
@@ -42,7 +43,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0"
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.1.0",
+    "System.IO.Compression": "4.3.0"
   },
 
   "tools": {

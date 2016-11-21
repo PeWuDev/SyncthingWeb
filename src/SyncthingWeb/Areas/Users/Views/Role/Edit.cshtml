@@ -1,0 +1,28 @@
+﻿@model Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole
+
+@{
+    ViewBag.Title = "Edit role";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="box box-info">
+            <div class="box-body">
+                @using (Html.BeginForm("Edit", "Role", new {area = "Users"}, FormMethod.Post))
+                {
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label>Name</label>
+                        @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+                    </div>
+                }
+            </div>
+            <div class="box-footer">
+                <button class="btn btn-primary pull-right" type="submit">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

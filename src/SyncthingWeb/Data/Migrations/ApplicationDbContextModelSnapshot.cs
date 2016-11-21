@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using SyncthingWeb.Data;
 
 namespace SyncthingWeb.Data.Migrations
 {
@@ -15,12 +13,13 @@ namespace SyncthingWeb.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rc3")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -34,6 +33,7 @@ namespace SyncthingWeb.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
+                        .IsUnique()
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
@@ -105,8 +105,6 @@ namespace SyncthingWeb.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AspNetUserRoles");
                 });
 
@@ -125,9 +123,28 @@ namespace SyncthingWeb.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SyncthingWeb.Models.AllowedFolder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("FolderId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AllowedFolder");
+                });
+
             modelBuilder.Entity("SyncthingWeb.Models.ApplicationUser", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
 
@@ -138,6 +155,8 @@ namespace SyncthingWeb.Data.Migrations
                         .HasAnnotation("MaxLength", 256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("IsEnabled");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -174,6 +193,88 @@ namespace SyncthingWeb.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("SyncthingWeb.Models.Folder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FolderId")
+                        .HasAnnotation("MaxLength", 32767);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Folders");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.GeneralSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AdminId");
+
+                    b.Property<bool>("EnableRegistration");
+
+                    b.Property<bool>("Initialzed");
+
+                    b.Property<string>("SyncthingConfigPath");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.ToTable("GeneralSettingses");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasAnnotation("MaxLength", 300);
+
+                    b.Property<string>("RoleId");
+
+                    b.Property<string>("RoleId1");
+
+                    b.Property<string>("RoleUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleUserId", "RoleId1");
+
+                    b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.SharedEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Data");
+
+                    b.Property<int>("FolderId");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired();
+
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<Guid>("Provider");
+
+                    b.Property<DateTime>("ShareTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("SharedEntries");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -208,6 +309,45 @@ namespace SyncthingWeb.Data.Migrations
                     b.HasOne("SyncthingWeb.Models.ApplicationUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.AllowedFolder", b =>
+                {
+                    b.HasOne("SyncthingWeb.Models.Folder", "Folder")
+                        .WithMany("Allowed")
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SyncthingWeb.Models.ApplicationUser", "User")
+                        .WithMany("Allowed")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.GeneralSettings", b =>
+                {
+                    b.HasOne("SyncthingWeb.Models.ApplicationUser", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.RolePermission", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleUserId", "RoleId1");
+                });
+
+            modelBuilder.Entity("SyncthingWeb.Models.SharedEntry", b =>
+                {
+                    b.HasOne("SyncthingWeb.Models.Folder", "Folder")
+                        .WithMany("Shared")
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SyncthingWeb.Models.ApplicationUser", "Owner")
+                        .WithMany("SharedEntried")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

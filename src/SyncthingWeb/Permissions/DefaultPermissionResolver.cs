@@ -9,7 +9,6 @@ using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
 using SyncthingWeb.Commands.Implementation.Users;
 using SyncthingWebUI.Commands.Implementations.Users;
-using SyncthingWebUI.Permissions;
 
 namespace SyncthingWeb.Permissions
 {
@@ -19,13 +18,13 @@ namespace SyncthingWeb.Permissions
         private const string AllPermissionsDictKey = "all-permissions-dictionary";
         private const string UserPermissionsTemplate = "user-permission-{0}";
 
-        private readonly IPermissionProvider permissionProvider;
+        private readonly IEventBus eventBus;
         private readonly ICache cache;
         private readonly ICommandFactory commandFactory;
 
-        public DefaultPermissionResolver(IPermissionProvider provider, ICache cache, ICommandFactory commandFactory)
+        public DefaultPermissionResolver(IEventBus provider, ICache cache, ICommandFactory commandFactory)
         {
-            this.permissionProvider = provider;
+            this.eventBus = provider;
             this.cache = cache;
             this.commandFactory = commandFactory;
         }
@@ -123,11 +122,11 @@ namespace SyncthingWeb.Permissions
 
         private HashSet<Permission> CollectAllPermission()
         {
-            var coll = new Collection<Permission>();
+            var evntColl = new PermissionCollector();
 
-            this.permissionProvider.Register(coll);
+            this.eventBus.Trigger<IPermissionCollector>(evntColl);
 
-            return new HashSet<Permission>(coll);
+            return new HashSet<Permission>(evntColl.Permissions);
         }
 
         public Task HandleAsync(AddedUserRoleEvent @event)

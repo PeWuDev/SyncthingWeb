@@ -1,0 +1,39 @@
+﻿@using System.Threading.Tasks
+@using SyncthingWeb.Extensions
+@model SyncthingWeb.Areas.Share.Controllers.CommonController.SharePreviewViewModel
+
+@{
+    ViewBag.Title = "Share preview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="box box-info">
+            <div class="box-header">
+                <h4>@Model.Entry.Folder.FolderId</h4>
+            </div>
+
+            <div class="box-body">
+                <div class="form-group">
+                    <label>Path</label>
+                    <input type="text" readonly="readonly" value="@Model.Entry.Path" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Shared at</label>
+                    <input type="text" readonly="readonly" value="@Model.Entry.ShareTime.ToString("D")" class="form-control"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Public link</label>
+                    <input type="text" readonly="readonly" value="@Url.AbsoluteAction("Index", Model.Share.NameOfController, new { area = Model.Share.AreaOfController, id = Model.Entry.Id })" class="form-control" />
+                </div>
+            </div>
+            <div class="box-footer">
+                <a href="@Url.Action("Stop", "Common", new {Model.Entry.Id})" class="pull-right btn btn-danger">Stop</a>
+                <a href="@Url.Action("Folders", "Home", new { area= "Folders", id = Model.Entry.Folder.Id, path=  Model.Entry.GetDirectory() })" class="pull-right btn btn-info">Back</a>
+            </div>
+        </div>
+    </div>
+</div>

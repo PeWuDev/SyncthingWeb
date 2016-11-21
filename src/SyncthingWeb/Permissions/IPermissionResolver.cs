@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SyncthingWebUI.Permissions;
 
 namespace SyncthingWeb.Permissions
 {
