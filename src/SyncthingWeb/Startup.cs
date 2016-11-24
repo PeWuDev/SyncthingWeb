@@ -78,6 +78,7 @@ namespace SyncthingWeb
 
             });
 
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
