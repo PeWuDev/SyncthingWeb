@@ -60,7 +60,23 @@ namespace SyncthingWeb
             services.AddMemoryCache();
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
+                var sqlProvider = Configuration.GetValue<string>("DatabaseProvider").ToLowerInvariant();
+
+                //TODO factory or sth - separate it!
+                switch (sqlProvider)
+                {
+                    case "mssql":
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultMSSQLConnection"));
+                        break;
+                    case "sqlite":
+                        options.UseSqlite(Configuration.GetConnectionString("DefaultSQLiteConnection"));
+                        break;
+                    default:
+                        throw new NotSupportedException("Provided type is not supported.");
+                }
+
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
