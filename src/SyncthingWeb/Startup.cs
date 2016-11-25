@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -77,7 +74,7 @@ namespace SyncthingWeb
                 }
 
             });
-
+          
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -117,6 +114,16 @@ namespace SyncthingWeb
 
             ApplicationContainer = builder.Build();
 
+#if !DEBUG
+            //let programmer manage migrations by himself when debugging
+
+            using (var scope = ApplicationContainer.BeginLifetimeScope())
+                using (var ctx = scope.Resolve<ApplicationDbContext>())
+                {
+                    ctx.Database.Migrate();
+                }
+#endif
+
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(ApplicationContainer);
         }
@@ -139,7 +146,6 @@ namespace SyncthingWeb
             }
 
             app.UseStaticFiles();
-
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
