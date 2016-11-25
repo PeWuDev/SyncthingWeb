@@ -99,7 +99,11 @@
     "include": [
       "wwwroot",
       "Views",
-      "Areas/**/Views",
+      "Areas/Devices/Views",
+      "Areas/Folders/Views",
+      "Areas/Setup/Views",
+      "Areas/Share/Views",
+      "Areas/Users/Views",
       "appsettings.json",
       "web.config"
     ]
