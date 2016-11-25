@@ -67,6 +67,9 @@ You can also specifiy more advanced option via command line arguments.
 | ------------ |:--------------------------------------------:| --------------:|
 | --port, -p   | Port number for listening of built-in server | 8385           |
 
+**Attention!**
+Remember to allow app to access read permission to syncthing config file and directory with files. Otherwise strange errors may occur (not handled yet :-)) 
+
 ### Database providers
 Currently, there are two databse providers:
 - MSSQL Server
