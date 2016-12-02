@@ -1,0 +1,13 @@
+{
+  "name": "SyncthingWeb",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-jshint": "latest",
+    "jshint-stylish": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-clean":  "latest"
+  }
+}

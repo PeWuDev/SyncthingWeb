@@ -166,6 +166,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+bower_components/
 *.metaproj
 *.metaproj.tmp
 .atom-build.json
