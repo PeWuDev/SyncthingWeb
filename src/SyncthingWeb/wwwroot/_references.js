@@ -52,6 +52,7 @@
 /// <reference path="../bower_components/select2/tests/vendor/jquery-1.7.2.js" />
 /// <reference path="../bower_components/select2/tests/vendor/qunit-1.14.0.js" />
 /// <reference path="../bower_components/select2/vendor/jquery-2.1.0.js" />
+/// <reference path="../gruntfile.js" />
 /// <reference path="js/admin-lte/app.js" />
 /// <reference path="js/admin-lte/pages/dashboard.js" />
 /// <reference path="js/admin-lte/pages/dashboard2.js" />

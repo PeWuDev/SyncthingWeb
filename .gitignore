@@ -1,5 +1,7 @@
 syntax: glob
 
+src/SyncthingWeb/wwwroot/lib
+
 [Bb]inaries/
 
 # Build tools related files
