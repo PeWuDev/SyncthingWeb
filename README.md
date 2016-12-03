@@ -46,7 +46,19 @@ Run `SyncthingWeb.exe` to start built-in kestrel server that will host your appl
 * Run ```npm install``` to install nodejs depdencies
 * Run ```dotnet build``` to build whole project
 * Run ```grunt build``` to build bower dependnecies and copy libraries to output path
-* Run ```dotnet``` to start kestrell server
+* Run ```dotnet run``` to start kestrell server:
+
+```ps
+C:\sw> dotnet run
+Project Syncthing.Integration (.NETStandard,Version=v1.6) was previously compiled. Skipping compilation.
+Project SyncthingWeb (.NETCoreApp,Version=v1.0) was previously compiled. Skipping compilation.
+info: Microsoft.Extensions.DependencyInjection.DataProtectionServices[0]
+      User profile is available. Using 'C:\Users\patry\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+Hosting environment: Production
+Content root path: C:\sw
+Now listening on: http://localhost:8385
+Application started. Press Ctrl+C to shut down.
+```
 
 ## Configuration
 All basic configuration value is stored in `appsettings.json`:
