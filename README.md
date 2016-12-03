@@ -39,6 +39,15 @@ What is not present?
 Download newest pre-compiled binaries from https://github.com/pwasiewicz/SyncthingWeb/releases.
 Run `SyncthingWeb.exe` to start built-in kestrel server that will host your application.
 
+### From source
+* Download sources from github
+* Run ```dotnet restore``` to install Asp.net core dependencies
+* Run ```bower install``` to install bower dependencies
+* Run ```npm install``` to install nodejs depdencies
+* Run ```dotnet build``` to build whole project
+* Run ```grunt build``` to build bower dependnecies and copy libraries to output path
+* Run ```dotnet``` to start kestrell server
+
 ## Configuration
 All basic configuration value is stored in `appsettings.json`:
 
