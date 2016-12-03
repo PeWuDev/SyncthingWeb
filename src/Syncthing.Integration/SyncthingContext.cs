@@ -5,25 +5,29 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Syncthing.Integration.Configuration;
 
 namespace Syncthing.Integration
 {
     public class SyncthingContext
     {
         private readonly Stream configFile;
+        private readonly SyncthingApiEndpoint apiEndpoint;
 
         private bool parsed;
-        private SyncthingContext(Stream configFile)
+        private SyncthingContext(Stream configFile, SyncthingApiEndpoint apiEndpoint = null)
         {
             if (configFile == null) throw new ArgumentNullException(nameof(configFile));
             this.configFile = configFile;
+            this.apiEndpoint = apiEndpoint;
         }
 
-        public static SyncthingContext Create(string configPath)
+        public static SyncthingContext Create(string configPath, SyncthingApiEndpoint apiEndpoint = null)
         {
+            //TODO handle exception when no permission
             using (var fr = new FileStream(configPath, FileMode.Open))
             {
-                return Create(fr);
+                return Create(fr, apiEndpoint);
             }
         }
 
@@ -48,9 +52,9 @@ namespace Syncthing.Integration
             });
         }
 
-        public static SyncthingContext Create(Stream configStream)
+        public static SyncthingContext Create(Stream configStream, SyncthingApiEndpoint apiEndpoint = null)
         {
-            var instance = new SyncthingContext(configStream);
+            var instance = new SyncthingContext(configStream, apiEndpoint);
             instance.Parse();
 
             return instance;
