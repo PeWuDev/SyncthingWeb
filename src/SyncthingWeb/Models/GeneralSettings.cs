@@ -9,7 +9,9 @@
 
         public virtual int Id { get; set; }
         public virtual bool Initialzed { get; set; }
-        public virtual string SyncthingConfigPath { get; set; }
+
+        public virtual string SyncthingEndpoint { get; set; }
+        public virtual string SyncthingApiKey { get; set; }
 
         public virtual string AdminId { get; set; }
         public virtual ApplicationUser Admin { get; set; }

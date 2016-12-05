@@ -72,7 +72,8 @@ namespace SyncthingWeb.Areas.Setup.Controllers
                             s =>
                             {
                                 s.Initialzed = true;
-                                s.SyncthingConfigPath = model.SyncthingConfigFile;
+                                s.SyncthingEndpoint = model.SyncthingEndpoint;
+                                s.SyncthingApiKey = model.SyncthingApiKey;
                                 s.AdminId = user.Id;
                                 s.EnableRegistration = model.EnableRegistration;
                             })
@@ -100,7 +101,8 @@ namespace SyncthingWeb.Areas.Setup.Controllers
         {
             await this.CommandFactory.Create<UpdateGeneralSettingsCommand>().Setup(gs =>
             {
-                gs.SyncthingConfigPath = model.SyncthingConfigPath;
+                gs.SyncthingEndpoint = model.SyncthingEndpoint;
+                gs.SyncthingApiKey = model.SyncthingApiKey;
                 gs.EnableRegistration = model.EnableRegistration;
             }).ExecuteAsync();
 

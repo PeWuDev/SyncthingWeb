@@ -17,11 +17,15 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label>Syncthing configuration file</label>
-                        <input asp-for="SyncthingConfigPath" class="form-control" />
-                        <span asp-validation-for="SyncthingConfigPath"></span>
+                        <label>Syncthing endpoint address</label>
+                        <input asp-for="SyncthingEndpoint" class="form-control" />
+                        <span asp-validation-for="SyncthingEndpoint"></span>
                     </div>
-
+                    <div class="form-group">
+                        <label>Syncthing API key</label>
+                        <input asp-for="SyncthingApiKey" class="form-control" />
+                        <span asp-validation-for="SyncthingApiKey"></span>
+                    </div>
                 </div>
                 <div class="box-footer">
                     <button type="submit" class="pull-right btn btn-primary">Save</button>

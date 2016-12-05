@@ -59,30 +59,30 @@ namespace SyncthingWeb.Syncthing
 
         private static void Watch(GeneralSettings settings)
         {
-            if (string.IsNullOrWhiteSpace(settings.SyncthingConfigPath)) return;
-            if (Watching) return;
+            //if (string.IsNullOrWhiteSpace(settings.SyncthingConfigPath)) return;
+            //if (Watching) return;
 
-            lock (WatchingLock)
-            {
-                if (Watching) return;
+            //lock (WatchingLock)
+            //{
+            //    if (Watching) return;
 
-                var fw = new FileSystemWatcher
-                {
-                    Path = Path.GetDirectoryName(settings.SyncthingConfigPath),
-                    Filter = Path.GetFileName(settings.SyncthingConfigPath)
-                };
+            //    var fw = new FileSystemWatcher
+            //    {
+            //        Path = Path.GetDirectoryName(settings.SyncthingConfigPath),
+            //        Filter = Path.GetFileName(settings.SyncthingConfigPath)
+            //    };
 
-                fw.Changed += (sender, args) =>
-                {
-                    //TODO other access
-                    //direct access to prevent no httpcontext errors
-                    Startup.ApplicationContainer.Resolve<ICache>().Signal(ContextCacheKey);
-                };
+            //    fw.Changed += (sender, args) =>
+            //    {
+            //        //TODO other access
+            //        //direct access to prevent no httpcontext errors
+            //        Startup.ApplicationContainer.Resolve<ICache>().Signal(ContextCacheKey);
+            //    };
 
-                fw.EnableRaisingEvents = true;
+            //    fw.EnableRaisingEvents = true;
 
-                Watching = true;
-            }
+            //    Watching = true;
+            //}
         }
 
 

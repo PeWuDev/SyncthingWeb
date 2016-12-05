@@ -20,8 +20,11 @@ namespace SyncthingWeb.Areas.Setup.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Config file is required.")]
-        public string SyncthingConfigFile { get; set; }
+        [Required(ErrorMessage = "Endpoing address is required.")]
+        public string SyncthingEndpoint { get; set; }
+
+        [Required(ErrorMessage = "Endpoing API key is required.")]
+        public string SyncthingApiKey { get; set; }
 
         public bool EnableRegistration { get; set; }
     }
