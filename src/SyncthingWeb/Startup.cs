@@ -114,15 +114,11 @@ namespace SyncthingWeb
 
             ApplicationContainer = builder.Build();
 
-#if !DEBUG
-            //let programmer manage migrations by himself when debugging
-
             using (var scope = ApplicationContainer.BeginLifetimeScope())
-                using (var ctx = scope.Resolve<ApplicationDbContext>())
-                {
-                    ctx.Database.Migrate();
-                }
-#endif
+            using (var ctx = scope.Resolve<ApplicationDbContext>())
+            {
+                ctx.Database.Migrate();
+            }
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(ApplicationContainer);
