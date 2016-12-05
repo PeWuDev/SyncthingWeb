@@ -13,20 +13,22 @@ namespace Syncthing.Integration
 
         public IEnumerable<SyncthingDevice> Devices { get; }
 
-        internal SyncthingFolder(XElement node, IDictionary<string, SyncthingDevice> devices)
+        internal SyncthingFolder(dynamic node, IDictionary<string, SyncthingDevice> devices)
         {
+            this.Id = node.id;
+            this.Path = node.path;
 
-            this.Id = node.Attribute("id").Value;
-            this.Path = node.Attribute("path").Value;
+            var devicesNode = node.devices;
 
-            var devicesNode = node.Elements("device");
+            var devicesLocal = new List<SyncthingDevice>();
+            foreach (var devNode in devicesNode)
+            {
+                string devNodeId = devNode.deviceID;
+                devicesLocal.Add(devices[devNodeId]);
+            }
 
-            this.Devices = (from devNode in devicesNode
-                            select devNode.Attribute("id").Value
-                                into devId
-                            where devices.ContainsKey(devId)
-                            select devices[devId]).ToList();
-
+            this.Devices = devicesLocal;
+            
             foreach (var device in Devices) device.PutFolder(this);
         }
 

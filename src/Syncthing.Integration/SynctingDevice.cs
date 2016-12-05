@@ -7,11 +7,11 @@ namespace Syncthing.Integration
     {
         private readonly HashSet<SyncthingFolder> folders;
 
-        internal SyncthingDevice(XElement node)
+        internal SyncthingDevice(dynamic apiConfig)
         {
-            this.Id = node.Attribute("id").Value;
-            this.Name = node.Attribute("name").Value;
-            this.Compression = node.Attribute("compression")?.Value;
+            this.Id = apiConfig.deviceID;
+            this.Name = apiConfig.name;
+            this.Compression = apiConfig.compression;
             this.folders = new HashSet<SyncthingFolder>();
         }
 

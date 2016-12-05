@@ -43,13 +43,6 @@ namespace SyncthingWeb.Areas.Setup.Controllers
                 return this.View(model);
             }
 
-            var testResult = await SyncthingContext.TestAccess(model.SyncthingConfigFile);
-            if (testResult != SyncthingContext.TestAccessResult.Ok)
-            {
-                this.ModelState.AddModelError("SyncthingConfigFile", "No access to config file");
-                this.logger.LogError(SetupLoggingEvents.ConfigureApp, "Cannot access config file: {0}", testResult);
-            }
-
             if (!ModelState.IsValid)
             {
                 return this.View(model);

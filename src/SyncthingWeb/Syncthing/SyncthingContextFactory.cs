@@ -9,6 +9,7 @@ using SyncthingWeb.Models;
 using System.Linq;
 using Autofac;
 using Syncthing.Integration;
+using Syncthing.Integration.Configuration;
 
 namespace SyncthingWeb.Syncthing
 {
@@ -38,7 +39,7 @@ namespace SyncthingWeb.Syncthing
                     var generalSettings =
                         await this.commandsFactory.Create<GetCurrentGeneralSettingsCommand>().SetupNoCache(true).GetAsync();
                     Watch(generalSettings);
-                    var ctx = SyncthingContext.Create(generalSettings.SyncthingConfigPath);
+                    var ctx = await SyncthingContext.CreateAsync(new SyncthingApiEndpoint("Zh3VYuLwZmPFVDte26xjz2aLKdo55fZo", "http://localhost:8384"));
                     await this.SynchronizeDatabase(ctx);
                     return ctx;
                 });

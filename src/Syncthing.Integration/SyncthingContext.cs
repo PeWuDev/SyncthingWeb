@@ -11,51 +11,18 @@ namespace Syncthing.Integration
 {
     public class SyncthingContext
     {
-        private readonly Stream configFile;
         private readonly SyncthingApiEndpoint apiEndpoint;
 
         private bool parsed;
-        private SyncthingContext(Stream configFile, SyncthingApiEndpoint apiEndpoint = null)
+        private SyncthingContext(SyncthingApiEndpoint apiEndpoint)
         {
-            if (configFile == null) throw new ArgumentNullException(nameof(configFile));
-            this.configFile = configFile;
             this.apiEndpoint = apiEndpoint;
-        }
+        }        
 
-        public static SyncthingContext Create(string configPath, SyncthingApiEndpoint apiEndpoint = null)
+        public static async Task<SyncthingContext> CreateAsync(SyncthingApiEndpoint apiEndpoint = null)
         {
-            //TODO handle exception when no permission
-            using (var fr = new FileStream(configPath, FileMode.Open))
-            {
-                return Create(fr, apiEndpoint);
-            }
-        }
-
-        public static Task<TestAccessResult> TestAccess(string configPath)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    if (!File.Exists(configPath)) return TestAccessResult.FileNotExists;
-
-                    using (File.Open(configPath, FileMode.Open, FileAccess.Read))
-                    {
-                    }
-
-                    return TestAccessResult.Ok;
-                }
-                catch
-                {
-                    return TestAccessResult.Unknown;
-                }
-            });
-        }
-
-        public static SyncthingContext Create(Stream configStream, SyncthingApiEndpoint apiEndpoint = null)
-        {
-            var instance = new SyncthingContext(configStream, apiEndpoint);
-            instance.Parse();
+            var instance = new SyncthingContext(apiEndpoint);
+            await instance.ParseAsync();
 
             return instance;
         }
@@ -76,26 +43,26 @@ namespace Syncthing.Integration
             return found;
         }
 
-        internal void Parse()
+        internal async Task ParseAsync()
         {
-            if (parsed) throw new InvalidOperationException("Already parsed.");
+            var result = await this.apiEndpoint.GetDynamicDataAsync("/rest/system/config");
 
-            using (var sr = new StreamReader(this.configFile))
+            var devices = new List<SyncthingDevice>();
+            foreach (var devNode in result.devices)
             {
-                var xdox = XDocument.Load(sr);
-                if (xdox.Root == null) throw new InvalidOperationException("Invalid configuration file.");
-
-                this.Devices =
-                    new ReadOnlyCollection<SyncthingDevice>(
-                        xdox.Root.Elements("device").Select(deviceNode => new SyncthingDevice(deviceNode)).ToList());
-
-                var devicesDictionary = this.Devices.ToDictionary(d => d.Id);
-                this.Folders =
-                    new ReadOnlyCollection<SyncthingFolder>(
-                        xdox.Root.Elements("folder")
-                            .Select(folderNode => new SyncthingFolder(folderNode, devicesDictionary))
-                            .ToList());
+                devices.Add(new SyncthingDevice(devNode));
             }
+
+            this.Devices = new ReadOnlyCollection<SyncthingDevice>(devices);
+
+            var devicesMap = this.Devices.ToDictionary(d => d.Id);
+            var folders = new List<SyncthingFolder>();
+            foreach (var folderNode in result.folders)
+            {
+                folders.Add(new SyncthingFolder(folderNode, devicesMap));
+            }
+
+            this.Folders = new ReadOnlyCollection<SyncthingFolder>(folders);
         }
 
         public SyncthingDevice GetDevice(string deviceId)
