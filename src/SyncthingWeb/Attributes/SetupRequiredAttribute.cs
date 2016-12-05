@@ -16,8 +16,9 @@ namespace SyncthingWeb.Attributes
     public class SetupRequiredAttribute : IActionFilter
     {
         private static bool? initializedCache = null;
+        private static bool checkForUpgrade = true;
 
-        private static object globalLock = new object();
+        private static readonly object globalLock = new object();
 
         public ICommandFactory CommandFactory { get; set; }
 
@@ -27,22 +28,60 @@ namespace SyncthingWeb.Attributes
             var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
             if (actionDescriptor == null) return;
 
-            if (Equals(actionDescriptor.ControllerTypeInfo, typeof( HomeController).GetTypeInfo()))
+            if (Equals(actionDescriptor.ControllerTypeInfo, typeof(HomeController).GetTypeInfo()))
             {
                 return;
             }
 
             var initialized = IsInitialized();
-            if (initialized) return;
+            if (initialized)
+            {
+                if (!NeedSettingsUpgrade()) return;
+
+
+                context.Result =
+                    new RedirectToRouteResult(
+                        new RouteValueDictionary
+                        {
+                            {"action", "SafeUpgrade"},
+                            {"controller", "Home"},
+                            {"area", "Setup"}
+                        });
+
+                return;
+            }
 
             context.Result =
                 new RedirectToRouteResult(
-                    new RouteValueDictionary { { "action", "Index" }, { "controller", "Home" }, { "area", "Setup" } });
+                    new RouteValueDictionary {{"action", "Index"}, {"controller", "Home"}, {"area", "Setup"}});
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
             
+        }
+
+        public static bool NeedSettingsUpgrade()
+        {
+            //no need to check
+            if (!checkForUpgrade) return false;
+
+            //upgrade not need when not initialized
+            if (!IsInitialized()) return false;
+
+            lock (globalLock)
+            {
+                var ctx = Startup.ApplicationContainer.Resolve<ApplicationDbContext>();
+                {
+                    //must enttiy exists (IsInitialized ensured that);
+                    var ent = ctx.GeneralSettingses.AsNoTracking().First();
+
+                    if (string.IsNullOrEmpty(ent.SyncthingApiKey) || string.IsNullOrEmpty(ent.SyncthingEndpoint)) return true;
+
+                    checkForUpgrade = false;
+                    return false;
+                }
+            }
         }
 
         public static bool IsInitialized()

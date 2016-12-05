@@ -19,7 +19,7 @@ namespace Syncthing.Integration
             this.apiEndpoint = apiEndpoint;
         }        
 
-        public static async Task<SyncthingContext> CreateAsync(SyncthingApiEndpoint apiEndpoint = null)
+        public static async Task<SyncthingContext> CreateAsync(SyncthingApiEndpoint apiEndpoint)
         {
             var instance = new SyncthingContext(apiEndpoint);
             await instance.ParseAsync();

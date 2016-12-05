@@ -39,7 +39,11 @@ namespace SyncthingWeb.Syncthing
                     var generalSettings =
                         await this.commandsFactory.Create<GetCurrentGeneralSettingsCommand>().SetupNoCache(true).GetAsync();
                     Watch(generalSettings);
-                    var ctx = await SyncthingContext.CreateAsync(new SyncthingApiEndpoint("Zh3VYuLwZmPFVDte26xjz2aLKdo55fZo", "http://localhost:8384"));
+                    var ctx =
+                        await
+                            SyncthingContext.CreateAsync(new SyncthingApiEndpoint(generalSettings.SyncthingApiKey,
+                                generalSettings.SyncthingEndpoint));
+
                     await this.SynchronizeDatabase(ctx);
                     return ctx;
                 });

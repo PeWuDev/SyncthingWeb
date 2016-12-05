@@ -88,7 +88,31 @@ namespace SyncthingWeb.Areas.Setup.Controllers
             return this.View(model);
         }
 
+        [AllowAnonymous]
+        public async Task<ActionResult> SafeUpgrade()
+        {
+            var entity = await this.CommandFactory.Create<GetCurrentGeneralSettingsCommand>().GetAsync();
+            return this.View(new SafeUpgradeVIewModel(entity));
+        }
 
+
+        [ValidateAntiForgeryToken, HttpPost]
+        public async Task<ActionResult> SafeUpgrade(SafeUpgradeVIewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
+            await this.CommandFactory.Create<UpdateGeneralSettingsCommand>().Setup(gs =>
+            {
+                gs.SyncthingEndpoint = model.SyncthingEndpoint;
+                gs.SyncthingApiKey = model.SyncthingApiKey;
+            }).ExecuteAsync();
+
+            this.Notifications.NotifySuccess("Settings saved successfully.");
+            return this.RedirectToAction("Index", "Home", new {area = ""});
+        }
 
         public async Task<ActionResult> Configuration()
         {
