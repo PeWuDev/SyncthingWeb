@@ -21,6 +21,15 @@ namespace Syncthing.Integration.Configuration
 
         public string Endpoint { get; }
 
+        public async Task<string> GetRawJsonDataAsync(string uri, object uriParams = null)
+        {
+            using (var httpClient = this.GetClient())
+            {
+                var response = await httpClient.GetStringAsync(BuildUrl(uri, uriParams));
+                return response;
+            }
+        }
+
         public async Task<dynamic> GetDynamicDataAsync(string uri, object uriParams = null)
         {
             using (var httpClient = this.GetClient())
@@ -48,7 +57,7 @@ namespace Syncthing.Integration.Configuration
             var parameters = UriHelpers.GetQueryString(uriParams);
             return string.IsNullOrWhiteSpace(parameters) ? uri : $"{uri}?{parameters}";
         }
-
+        
         private HttpClient GetClient()
         {
             var cl = new HttpClient();

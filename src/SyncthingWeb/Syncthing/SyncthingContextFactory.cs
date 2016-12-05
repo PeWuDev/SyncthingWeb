@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using SyncthingWeb.Caching;
@@ -7,6 +8,7 @@ using SyncthingWeb.Commands.Implementation.Folders;
 using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Models;
 using System.Linq;
+using System.Threading;
 using Autofac;
 using Syncthing.Integration;
 using Syncthing.Integration.Configuration;
@@ -18,7 +20,7 @@ namespace SyncthingWeb.Syncthing
         private const string ContextCacheKey = "syncthing-current-context";
 
         private static object WatchingLock = new object();
-        private static bool Watching = false;
+        private static Thread watchingThread = null;
 
         private readonly ICache cache;
 
@@ -37,14 +39,20 @@ namespace SyncthingWeb.Syncthing
                 async context =>
                 {
                     var generalSettings =
-                        await this.commandsFactory.Create<GetCurrentGeneralSettingsCommand>().SetupNoCache(true).GetAsync();
-                    Watch(generalSettings);
+                        await
+                            this.commandsFactory.Create<GetCurrentGeneralSettingsCommand>()
+                                .SetupNoCache(true)
+                                .GetAsync();
+
                     var ctx =
                         await
                             SyncthingContext.CreateAsync(new SyncthingApiEndpoint(generalSettings.SyncthingApiKey,
                                 generalSettings.SyncthingEndpoint));
 
                     await this.SynchronizeDatabase(ctx);
+
+                    Watch(ctx);
+
                     return ctx;
                 });
         }
@@ -61,31 +69,36 @@ namespace SyncthingWeb.Syncthing
             await this.commandsFactory.Create<RemoveFolderCommand>().Setup(toRemove.ToArray()).ExecuteAsync();
         }
 
-        private static void Watch(GeneralSettings settings)
+        private static void Watch(SyncthingContext ctx)
         {
-            //if (string.IsNullOrWhiteSpace(settings.SyncthingConfigPath)) return;
-            //if (Watching) return;
-
             //lock (WatchingLock)
             //{
-            //    if (Watching) return;
+            //    if (watchingThread != null && watchingThread.ThreadState != ThreadState.Stopped)
+            //        throw new InvalidOperationException("Last watching thread ended unexpected");
 
-            //    var fw = new FileSystemWatcher
+            //    watchingThread = new Thread(() =>
             //    {
-            //        Path = Path.GetDirectoryName(settings.SyncthingConfigPath),
-            //        Filter = Path.GetFileName(settings.SyncthingConfigPath)
-            //    };
+            //        while (true)
+            //        {
+            //            try
+            //            {
+            //                Thread.Sleep(TimeSpan.FromMinutes(5));
+            //            } catch () 
 
-            //    fw.Changed += (sender, args) =>
-            //    {
-            //        //TODO other access
-            //        //direct access to prevent no httpcontext errors
-            //        Startup.ApplicationContainer.Resolve<ICache>().Signal(ContextCacheKey);
-            //    };
+            //            var changed = Task.Run(async () => await ctx.ConfigWatcher.ChangedAsync()).Result;
+            //            if (!changed)
+            //            {
+            //                continue;
+            //            }
 
-            //    fw.EnableRaisingEvents = true;
+            //            var cache = Startup.ApplicationContainer.Resolve<ICache>();
+            //            cache.Signal(ContextCacheKey);
 
-            //    Watching = true;
+            //            break;
+            //        }
+            //    });
+
+            //    watchingThread.Start();
             //}
         }
 

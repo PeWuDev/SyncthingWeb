@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 using Syncthing.Integration.Configuration;
+using Syncthing.Integration.Watchers;
 
 namespace Syncthing.Integration
 {
@@ -13,11 +15,13 @@ namespace Syncthing.Integration
     {
         private readonly SyncthingApiEndpoint apiEndpoint;
 
-        private bool parsed;
+        private IConfigWatcher configWatcher;
+        private string originalConfigAnswer;
+
         private SyncthingContext(SyncthingApiEndpoint apiEndpoint)
         {
             this.apiEndpoint = apiEndpoint;
-        }        
+        }
 
         public static async Task<SyncthingContext> CreateAsync(SyncthingApiEndpoint apiEndpoint)
         {
@@ -29,6 +33,8 @@ namespace Syncthing.Integration
 
         public ReadOnlyCollection<SyncthingFolder> Folders { get; private set; }
         public ReadOnlyCollection<SyncthingDevice> Devices { get; private set; }
+
+        public IConfigWatcher ConfigWatcher => configWatcher ?? (configWatcher = new InternalConfigWatcher(this));
 
         public IEnumerable<SyncthingFolder> GetFolders(string deviceId)
         {
@@ -45,9 +51,11 @@ namespace Syncthing.Integration
 
         internal async Task ParseAsync()
         {
-            var result = await this.apiEndpoint.GetDynamicDataAsync("/rest/system/config");
+            this.originalConfigAnswer = await this.apiEndpoint.GetRawJsonDataAsync("/rest/system/config");
+            dynamic result = JObject.Parse(this.originalConfigAnswer);
 
             var devices = new List<SyncthingDevice>();
+
             foreach (var devNode in result.devices)
             {
                 devices.Add(new SyncthingDevice(devNode));
@@ -75,6 +83,33 @@ namespace Syncthing.Integration
             Ok,
             FileNotExists,
             Unknown
+        }
+
+        private class InternalConfigWatcher : IConfigWatcher
+        {
+            private readonly SyncthingContext ctx;
+
+            public InternalConfigWatcher(SyncthingContext ctx)
+            {
+                this.ctx = ctx;
+            }
+
+            public async Task<bool> ChangedAsync()
+            {
+                try
+                {
+                    var newConfig = await ctx.apiEndpoint.GetRawJsonDataAsync("/rest/system/config");
+
+                    const StringComparison comparisonMode = StringComparison.CurrentCultureIgnoreCase;
+                    return
+                        string.Compare(ctx.originalConfigAnswer, newConfig, comparisonMode) != 0;
+                }
+                catch
+                {
+                    //TODO log
+                    return false;
+                }
+            }
         }
     }
 }
