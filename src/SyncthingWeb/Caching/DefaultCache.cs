@@ -23,7 +23,7 @@ namespace SyncthingWeb.Caching
 
         public void Put<T>(string key, T item)
         {
-            this.appCache.CreateEntry(item).SetValue(item);
+            this.appCache.Set(key, item);
         }
 
         public T Get<T>(string key)
@@ -110,7 +110,7 @@ namespace SyncthingWeb.Caching
                 if (result == null || result.Equals(default(T)))
                 {
                     result = await addItemFactory(new CacheContext(key));
-                    this.appCache.CreateEntry(key).SetValue(result).SetSlidingExpiration(TimeSpan.FromDays(1));
+                    this.appCache.Set(key, result, TimeSpan.FromDays(1));
                 }
             }
             finally

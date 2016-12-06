@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentScheduler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -158,7 +159,7 @@ namespace SyncthingWeb
 
             });
 
-
+            JobManager.Start();
         }
 
         public void ConfigureEvents(ContainerBuilder builder)

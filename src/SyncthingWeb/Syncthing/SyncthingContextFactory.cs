@@ -10,6 +10,7 @@ using SyncthingWeb.Models;
 using System.Linq;
 using System.Threading;
 using Autofac;
+using FluentScheduler;
 using Syncthing.Integration;
 using Syncthing.Integration.Configuration;
 
@@ -19,8 +20,7 @@ namespace SyncthingWeb.Syncthing
     {
         private const string ContextCacheKey = "syncthing-current-context";
 
-        private static object WatchingLock = new object();
-        private static Thread watchingThread = null;
+        private static readonly object WatchingLock = new object();
 
         private readonly ICache cache;
 
@@ -71,35 +71,20 @@ namespace SyncthingWeb.Syncthing
 
         private static void Watch(SyncthingContext ctx)
         {
-            //lock (WatchingLock)
-            //{
-            //    if (watchingThread != null && watchingThread.ThreadState != ThreadState.Stopped)
-            //        throw new InvalidOperationException("Last watching thread ended unexpected");
+            const string jobName = "SycnthingContextWatch";
 
-            //    watchingThread = new Thread(() =>
-            //    {
-            //        while (true)
-            //        {
-            //            try
-            //            {
-            //                Thread.Sleep(TimeSpan.FromMinutes(5));
-            //            } catch () 
+            lock (WatchingLock)
+            {
+                JobManager.RemoveJob(jobName);
+                JobManager.AddJob(async () =>
+                {
+                    var changed = await ctx.ConfigWatcher.ChangedAsync();
+                    if (!changed) return;
 
-            //            var changed = Task.Run(async () => await ctx.ConfigWatcher.ChangedAsync()).Result;
-            //            if (!changed)
-            //            {
-            //                continue;
-            //            }
-
-            //            var cache = Startup.ApplicationContainer.Resolve<ICache>();
-            //            cache.Signal(ContextCacheKey);
-
-            //            break;
-            //        }
-            //    });
-
-            //    watchingThread.Start();
-            //}
+                    var cache = Startup.ApplicationContainer.Resolve<ICache>();
+                    cache.Signal(ContextCacheKey);
+                }, schedule => schedule.WithName(jobName).ToRunEvery(5).Minutes());
+            }
         }
 
 

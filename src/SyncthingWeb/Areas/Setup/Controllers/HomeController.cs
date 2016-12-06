@@ -99,7 +99,7 @@ namespace SyncthingWeb.Areas.Setup.Controllers
         [ValidateAntiForgeryToken, HttpPost]
         public async Task<ActionResult> SafeUpgrade(SafeUpgradeVIewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return this.View(model);
             }

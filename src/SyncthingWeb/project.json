@@ -3,6 +3,7 @@
   "userSecretsId": "aspnet-SyncthingWeb-d58d8c7f-f8b7-4c3d-94f3-66d1ee2ee957",
 
   "dependencies": {
+    "FluentScheduler": "5.1.0",
     "System.Security.Cryptography.Algorithms": "4.3.0",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
