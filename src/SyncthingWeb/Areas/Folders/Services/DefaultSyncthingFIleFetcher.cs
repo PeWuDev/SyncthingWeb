@@ -9,11 +9,11 @@ using SyncthingWeb.Syncthing;
 
 namespace SyncthingWeb.Areas.Folders.Services
 {
-    public class DefaultSyncthingFIleFetcher : ISyncthingFileFetcher
+    public class DefaultSyncthingFileFetcher : ISyncthingFileFetcher
     {
         private readonly ISyncthingContextFactory syncthingContextFactory;
 
-        public DefaultSyncthingFIleFetcher(ISyncthingContextFactory syncthingContextFactory)
+        public DefaultSyncthingFileFetcher(ISyncthingContextFactory syncthingContextFactory)
         {
             this.syncthingContextFactory = syncthingContextFactory;
         }

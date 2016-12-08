@@ -17,10 +17,12 @@ namespace SyncthingWeb.Areas.Folders.Controllers
     public class HomeController : FolderControllerBase
     {
         private readonly ISyncthingFileFetcher fileFetcher;
+        private readonly IPreviewProviderManager previewProviderManager;
 
-        public HomeController(ISyncthingFileFetcher fileFetcher)
+        public HomeController(ISyncthingFileFetcher fileFetcher, IPreviewProviderManager previewProviderManager)
         {
             this.fileFetcher = fileFetcher;
+            this.previewProviderManager = previewProviderManager;
         }
 
         public async Task<ActionResult> Index(string id, string path = "")
@@ -41,7 +43,11 @@ namespace SyncthingWeb.Areas.Folders.Controllers
                     this.CommandFactory.Create<GetSharedEntriesForPathCommand>()
                         .Setup(id, this.UserManager.GetUserId(this.User), filesEvaluated.Select(f => Path.Combine(path, f.Name)).ToArray()).GetAsync();
 
-            var wm = new StorageContentViewModel(dirs, filesEvaluated) { FolderId = id, CurrPath = path };
+            var wm = new StorageContentViewModel(dirs, this.previewProviderManager.MakePreviewable(filesEvaluated))
+            {
+                FolderId = id,
+                CurrPath = path
+            };
 
             this.BuildBreadcrumb(id, path);
 

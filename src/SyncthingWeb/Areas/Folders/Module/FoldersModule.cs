@@ -8,7 +8,8 @@ namespace SyncthingWebUI.Areas.Folders.Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<DefaultSyncthingFIleFetcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultSyncthingFileFetcher>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DefaultPreviewProviderManager>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

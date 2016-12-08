@@ -46,10 +46,9 @@ namespace SyncthingWeb.Areas.Setup.Controllers
             }
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-            IdentityResult result;
 
             this.logger.LogInformation(SetupLoggingEvents.ConfigureApp, "Creating super admin user \"{0}\"", model.Email);
-            result = await this.userManager.CreateAsync(user, model.Password);
+            var result = await this.userManager.CreateAsync(user, model.Password);
 
 
             if (!result.Succeeded)

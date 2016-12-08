@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SyncthingWeb.Areas.Folders.Helpers;
@@ -17,14 +16,12 @@ namespace SyncthingWeb.Areas.Folders.Directors
     {
         private readonly ISyncthingFileFetcher fileFetcher;
         private readonly ICommandFactory commandFactory;
-        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IActionContextAccessor actionContextAccessor;
 
-        public FileSearchDirectory(ISyncthingFileFetcher fileFetcher, ICommandFactory commandFactory, IHttpContextAccessor httpContextAccessor, IActionContextAccessor actionContextAccessor)
+        public FileSearchDirectory(ISyncthingFileFetcher fileFetcher, ICommandFactory commandFactory, IActionContextAccessor actionContextAccessor)
         {
             this.fileFetcher = fileFetcher;
             this.commandFactory = commandFactory;
-            this.httpContextAccessor = httpContextAccessor;
             this.actionContextAccessor = actionContextAccessor;
         }
 

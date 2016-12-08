@@ -16,13 +16,17 @@ namespace SyncthingWeb.Areas.Folders.Models
             this.Path = path;
         }
 
-        public string FolderId { get; }
-        public string Path { get; }
+        protected FileEntryContext()
+        {
+        }
 
-        public DateTime ModifiedDate { get;}
+        public string FolderId { get; protected set; }
+        public string Path { get; protected set; }
 
-        public long Length { get; }
+        public DateTime ModifiedDate { get; protected set; }
 
-        public string Name { get;}
+        public long Length { get; protected set; }
+
+        public string Name { get; protected set; }
     }
 }

@@ -62,7 +62,7 @@
                 </div>
             }
 
-            var filesGrouped = Model.Files.DivideIntoRows(3);
+            var filesGrouped = Model.Files.Where(ctx => ctx.PreviewProvider == null).DivideIntoRows(3);
 
             foreach (var filesRow in filesGrouped.Select(d => d.ToList()))
             {
@@ -114,13 +114,44 @@
                 </div>
             }
 
+            var withPreviewGrouped = Model.Files.Where(ctx => ctx.PreviewProvider != null).GroupBy(ctx => ctx.PreviewProvider);
+
+            foreach (var previewGroup in withPreviewGrouped)
+            {
+                <div class="row">
+                    <h2>@previewGroup.Key.Title</h2>
+                </div>
+
+                var withPreviewDivided = previewGroup.DivideIntoRows(3);
+                foreach (var withPreviewRow in withPreviewDivided.Select(r => r.ToList()))
+                {
+                    <div class="row">
+                        @for (var i = 0; i < 4; i++)
+                        {
+
+                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                                @if (i < withPreviewRow.Count)
+                                {
+
+                                    var file = withPreviewRow[i];
+
+                                    <div class="info-box">
+                                        @await Component.InvokeAsync(@file.PreviewProvider.ItemPreviewComponent, file)
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+
         }
         else
         {
             <div class="box box-info">
-            <div class="box-header">
-                <h4>Ups...</h4>
-            </div>
+                <div class="box-header">
+                    <h4>Ups...</h4>
+                </div>
                 <div class="box-body">
                     <p>There is no folder or files in here.</p>
                 </div>
@@ -132,8 +163,8 @@
 
 @section scripts
 {
-    
-<script type="text/javascript">
+
+    <script type="text/javascript">
         $("[data-url]").click(function () {
             if ($(this).attr("data-no-new-window") === "true") {
                 window.location.href = $(this).attr("data-url");
@@ -141,5 +172,5 @@
                 window.open($(this).attr("data-url"));
             }
         });
-</script>
+    </script>
 }
