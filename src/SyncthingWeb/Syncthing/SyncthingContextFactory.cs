@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using Autofac;
 using FluentScheduler;
+using Microsoft.Extensions.Logging;
 using Syncthing.Integration;
 using Syncthing.Integration.Configuration;
 
@@ -26,10 +27,13 @@ namespace SyncthingWeb.Syncthing
 
         private readonly ICommandFactory commandsFactory;
 
-        public DefaultSyncthingContextFactory(ICache cache, ICommandFactory commandsFactory)
+        private readonly ILoggerFactory loggerFactory;
+
+        public DefaultSyncthingContextFactory(ICache cache, ICommandFactory commandsFactory, ILoggerFactory loggerFactory)
         {
             this.cache = cache;
             this.commandsFactory = commandsFactory;
+            this.loggerFactory = loggerFactory;
         }
 
         public Task<SyncthingContext> GetContext()
@@ -48,6 +52,9 @@ namespace SyncthingWeb.Syncthing
                         await
                             SyncthingContext.CreateAsync(new SyncthingApiEndpoint(generalSettings.SyncthingApiKey,
                                 generalSettings.SyncthingEndpoint));
+
+                    var logger = loggerFactory.CreateLogger(typeof(SyncthingContext));
+                    ctx.Configuration.SetErrorCallback(message => logger.LogError(message));
 
                     await this.SynchronizeDatabase(ctx);
 

@@ -17,5 +17,8 @@
         public virtual ApplicationUser Admin { get; set; }
 
         public virtual bool EnableRegistration { get; set; }
+
+        public bool NeedsUpgrade()
+            => string.IsNullOrEmpty(this.SyncthingApiKey) || string.IsNullOrEmpty(this.SyncthingEndpoint);
     }
 }

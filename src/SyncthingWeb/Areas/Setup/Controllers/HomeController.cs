@@ -92,6 +92,11 @@ namespace SyncthingWeb.Areas.Setup.Controllers
         public async Task<ActionResult> SafeUpgrade()
         {
             var entity = await this.CommandFactory.Create<GetCurrentGeneralSettingsCommand>().GetAsync();
+            if (!entity.NeedsUpgrade())
+            {
+                return this.Unauthorized();
+            }
+
             return this.View(new SafeUpgradeVIewModel(entity));
         }
 

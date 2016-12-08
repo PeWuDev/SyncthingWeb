@@ -76,7 +76,7 @@ namespace SyncthingWeb.Attributes
                     //must enttiy exists (IsInitialized ensured that);
                     var ent = ctx.GeneralSettingses.AsNoTracking().First();
 
-                    if (string.IsNullOrEmpty(ent.SyncthingApiKey) || string.IsNullOrEmpty(ent.SyncthingEndpoint)) return true;
+                    if (ent.NeedsUpgrade()) return true;
 
                     checkForUpgrade = false;
                     return false;

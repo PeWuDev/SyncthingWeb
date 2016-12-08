@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using Syncthing.Integration.Configuration;
 using Syncthing.Integration.Watchers;
@@ -30,6 +28,8 @@ namespace Syncthing.Integration
 
             return instance;
         }
+
+        public SyncthingContextConfiguration Configuration { get; private set; } = new SyncthingContextConfiguration();
 
         public ReadOnlyCollection<SyncthingFolder> Folders { get; private set; }
         public ReadOnlyCollection<SyncthingDevice> Devices { get; private set; }
@@ -104,9 +104,10 @@ namespace Syncthing.Integration
                     return
                         string.Compare(ctx.originalConfigAnswer, newConfig, comparisonMode) != 0;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //TODO log
+                    this.ctx.Configuration.OnErrorCallback(
+                        $"Cannot comapre newest config to the old one:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
                     return false;
                 }
             }
