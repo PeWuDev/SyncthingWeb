@@ -1,15 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Syncthing.Integration;
 using SyncthingWeb.Areas.Setup.Models;
 using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Helpers;
 using SyncthingWeb.Models;
-using SyncthingWeb.Syncthing;
 
 namespace SyncthingWeb.Areas.Setup.Controllers
 {
