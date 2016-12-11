@@ -134,9 +134,21 @@
                                 {
 
                                     var file = withPreviewRow[i];
+                                    var filePath = Model.PathFor(file.Name);
 
                                     <div class="info-box">
-                                        @await Component.InvokeAsync(@file.PreviewProvider.ItemPreviewComponent, file)
+                                        <div class="box-tools pull-right">
+                                            
+                                            @if (ViewBag.CanShare)
+                                            {
+                                                <button data-no-new-window="true" data-url="@Url.Action("Share", "Common", new {area = "Share", id = Model.FolderId, path = filePath})" type="button" class="btn btn-box-tool"><i class="fa fa-share"></i></button>
+                                            }
+                                            <button data-url="@Url.Action("GetFile", "Home", new {id = Model.FolderId, path = filePath})" type="button" class="btn btn-box-tool"><i class="fa fa-download"></i></button>
+                                        </div>
+                                                                                
+                                        <div class="info-box-content">
+                                            @await Component.InvokeAsync(@file.PreviewProvider.ItemPreviewComponent, file)
+                                        </div>
                                     </div>
                                 }
                             </div>
