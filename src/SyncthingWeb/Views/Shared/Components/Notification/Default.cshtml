@@ -37,10 +37,12 @@
             self.notify("success", msg);
         };
 
-        @foreach (var item in Model)
-        {
-            <text>this.notify("@GetClassName(item.Type)", "@Html.Raw(item.Text)")</text>
-        }
+        window.addEventListener("load", function() {
+            @foreach (var item in Model)
+            {
+                <text>self.notify("@GetClassName(item.Type)", "@Html.Raw(item.Text)");</text>
+            }
+        });
     }
 
 </script>

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using SyncthingWeb.Helpers;
 
@@ -20,11 +22,15 @@ namespace SyncthingWeb.Notifications
         {
             get
             {
-                var records = this.GetCurrentRecords();
-                var outputList = new ReadOnlyCollection<NotifyRecord>(new List<NotifyRecord>(records));
+                IList<NotifyRecord> records = null;
 
-                records.Clear();
-                return outputList;
+                GetCurrentRecords(currList =>
+                {
+                    records = currList.ToList();
+                    currList.Clear();
+                });
+
+                return records ?? new List<NotifyRecord>();
             }
         }
 
@@ -32,9 +38,9 @@ namespace SyncthingWeb.Notifications
         public void Notify(NotifyType type, IconType icon, string format, params object[] args)
         {
             var record = new NotifyRecord { Type = type, Icon = icon, Text = string.Format(format, args) };
-            var currList = this.GetCurrentRecords();
+            GetCurrentRecords(currList => currList.Add(record));
 
-            currList?.Add(record);
+
         }
 
         public void NotifyInfo(string format, params object[] args)
@@ -57,25 +63,25 @@ namespace SyncthingWeb.Notifications
             this.Notify(NotifyType.Success, IconType.Check, format, args);
         }
 
-        private IList<NotifyRecord> GetCurrentRecords()
+
+        private void GetCurrentRecords(Action<IList<NotifyRecord>> action)
         {
             if (this.session == null)
             {
-                return null;
+                return;
             }
 
-            var collection =
-                SessionSerializer.Deserialize<List<NotifyRecord>>(this.session.GetString(NotificationMessagesSessionKey));
-            if (collection != null)
+            lock (this.session.Id)
             {
-                return collection;
+                var collection =
+                    SessionSerializer.Deserialize<List<NotifyRecord>>(
+                        this.session.GetString(NotificationMessagesSessionKey)) ??
+                    new List<NotifyRecord>();
+
+                action(collection);
+                this.session.SetString(NotificationMessagesSessionKey, SessionSerializer.Serialize(collection));
             }
 
-            collection = new List<NotifyRecord>();
-
-            this.session.SetString(NotificationMessagesSessionKey, SessionSerializer.Serialize(collection));
-
-            return collection;
         }
     }
 }
