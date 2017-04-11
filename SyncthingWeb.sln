@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C0BA2D65-6B64-4FEF-A08A-64477F718EF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A52BFB6-9479-4694-8704-B49ABC6A1FD7}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SyncthingWeb", "src\SyncthingWeb\SyncthingWeb.xproj", "{3BF582CF-56F9-45CE-8473-CDCD20BDEADB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncthingWeb", "src\SyncthingWeb\SyncthingWeb.csproj", "{3BF582CF-56F9-45CE-8473-CDCD20BDEADB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Syncthing.Integration", "src\Syncthing.Integration\Syncthing.Integration.xproj", "{59C76A68-C340-441C-AEFC-AA5AC4E0A391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syncthing.Integration", "src\Syncthing.Integration\Syncthing.Integration.csproj", "{59C76A68-C340-441C-AEFC-AA5AC4E0A391}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
