@@ -96,8 +96,11 @@ Currently, there are two databse providers:
 - MSSQL Server
 - SQLite (**default**)
 
-
 ## Release notes
+### v1.1.0
+
++ Previewing image files
+* Notifications are shown properly
 ### v1.0.0
 
 * First release
