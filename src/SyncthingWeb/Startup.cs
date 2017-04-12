@@ -131,7 +131,7 @@ namespace SyncthingWeb
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || this.Configuration["DevelopmentErrors"] == "true")
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();

@@ -29,7 +29,7 @@ namespace Syncthing.Integration
             return instance;
         }
 
-        public SyncthingContextConfiguration Configuration { get; private set; } = new SyncthingContextConfiguration();
+        public SyncthingContextConfiguration Configuration { get; } = new SyncthingContextConfiguration();
 
         public ReadOnlyCollection<SyncthingFolder> Folders { get; private set; }
         public ReadOnlyCollection<SyncthingDevice> Devices { get; private set; }
