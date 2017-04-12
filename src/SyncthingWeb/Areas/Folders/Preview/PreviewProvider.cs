@@ -6,9 +6,9 @@ namespace SyncthingWeb.Areas.Folders.Preview
     public abstract class PreviewProvider
     {
         public abstract Guid Id { get; }
-
-        public abstract string ItemPreviewComponent { get; }
+        
         public abstract string Title { get; }
+        public abstract string ItemIconPreviewComponent { get; set; }
 
         public abstract bool CanPreview(FileEntryContext entry);
 

@@ -145,9 +145,20 @@
                                             }
                                             <button data-url="@Url.Action("GetFile", "Home", new {id = Model.FolderId, path = filePath})" type="button" class="btn btn-box-tool"><i class="fa fa-download"></i></button>
                                         </div>
-                                                                                
+
+                                        <span class="info-box-icon bg-green">
+                                            @await Component.InvokeAsync(file.PreviewProvider.ItemIconPreviewComponent, file)
+                                        </span>                                                                                
                                         <div class="info-box-content">
-                                            @await Component.InvokeAsync(@file.PreviewProvider.ItemPreviewComponent, file)
+                                            
+                                            <span class="info-box-text">@file.ModifiedDate.ToString("D")</span>
+                                            <span class="info-box-text">@FileSize.GetBytesReadable(file.Length)</span>
+                                            <span class="info-box-number">@file.Name</span>
+                                            @if (shared.ContainsKey(filePath) && shared[filePath] != null)
+                                            {
+                                                <span class="info-box-text pull-right" style="cursor: pointer" data-no-new-window="true" data-url="@Url.Action("SharePreview", "Common", new {area = "Share", id = Model.FolderId, path = filePath})">Shared</span>
+                                            }
+
                                         </div>
                                     </div>
                                 }
