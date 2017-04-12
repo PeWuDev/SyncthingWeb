@@ -97,7 +97,7 @@ Currently, there are two databse providers:
 - SQLite (**default**)
 
 ## Release notes
-### v1.1.0
+### v1.0.1
 
 + Previewing image files
 * Notifications are shown properly
