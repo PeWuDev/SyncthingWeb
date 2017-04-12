@@ -17,6 +17,7 @@ namespace SyncthingWeb.Caching
         public DefaultCache(IMemoryCache appCache)
         {
             this.appCache = appCache;
+
             this.asyncSemaphore = new SemaphoreSlim(1);
             this.localSemaphores = new Dictionary<string, SemaphoreSlim>();
         }
