@@ -17,6 +17,7 @@ using SyncthingWeb.Bus;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
 using SyncthingWeb.Data;
+using SyncthingWeb.Exceptions;
 using SyncthingWeb.Models;
 using SyncthingWeb.Modules;
 using SyncthingWeb.Permissions;
@@ -76,7 +77,6 @@ namespace SyncthingWeb
 
             });
           
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -84,7 +84,9 @@ namespace SyncthingWeb
             services.AddMvc(opt =>
             {
                 opt.Filters.Add(typeof(SetupRequiredAttribute));
+                opt.Filters.Add(typeof(GlobalExceptionFilter));
             });
+
             services.AddDistributedMemoryCache();
             services.AddSession();
 
@@ -158,6 +160,7 @@ namespace SyncthingWeb
                     template: "{controller=Home}/{action=Index}/{id?}");
 
             });
+
 
             JobManager.Start();
         }

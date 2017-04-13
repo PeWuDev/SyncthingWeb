@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Syncthing.Integration;
+using Syncthing.Integration.Exceptions;
 using SyncthingWeb.Authorization;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Folders;
@@ -29,7 +30,16 @@ namespace SyncthingWeb.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var ctx = await this.syncthingContextFactory.GetContext();
+            SyncthingContext ctx;
+
+            try
+            {
+                ctx = await this.syncthingContextFactory.GetContext();
+            }
+            catch (SyncthingConnectionException)
+            {
+                ctx = null;
+            }
 
             var isSuperAdmin =  await this.authorizer.IsSuperAdminAsync();;
 

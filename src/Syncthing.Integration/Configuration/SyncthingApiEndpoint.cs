@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Syncthing.Integration.Exceptions;
 using Syncthing.Integration.Helpers;
 
 namespace Syncthing.Integration.Configuration
@@ -23,7 +24,19 @@ namespace Syncthing.Integration.Configuration
         {
             using (var httpClient = this.GetClient())
             {
-                var response = await httpClient.GetStringAsync(BuildUrl(uri, uriParams));
+                string response;
+
+                try
+                {
+                    response = await httpClient.GetStringAsync(BuildUrl(uri, uriParams));
+                }
+                catch (Exception ex)
+                {
+                    throw new SyncthingConnectionException(
+                        $"Error while connecting to Syncthing endpoint: {ex.Message}",
+                        ex.InnerException ?? ex);
+                }
+
                 return response;
             }
         }
