@@ -41,6 +41,7 @@ Run `SyncthingWeb.exe` to start built-in kestrel server that will host your appl
 
 ### From source
 * Download sources from github
+* Add ImageSharp MyGet feed (https://www.myget.org/F/imagesharp/api/v3/index.json) to nuget package sources (tutorial: https://github.com/aspnet/Home/wiki/Configuring-the-feed-used-by-dnu-to-restore-packages)
 * Run ```dotnet restore``` to install Asp.net core dependencies
 * Run ```bower install``` to install bower dependencies
 * Run ```npm install``` to install nodejs depdencies
