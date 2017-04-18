@@ -7,24 +7,19 @@
 }
 
 
-<form method="get" asp-action="Configuration" asp-controller="Home" asp-area="Setup" asp-antiforgery="true">
-
+<form method="post" asp-action="Configuration" asp-controller="Home" asp-area="Setup" asp-antiforgery="true">
+    
     <div class="row">
-        <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="col-xs-12 col-md-12 col-xs-12 col-sm-12">
             <div class="box box-info">
                 <div class="box-header">
-                    <h4>Syncthing</h4>
+                    <h4>General</h4>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label>Syncthing endpoint address</label>
-                        <input asp-for="SyncthingEndpoint" class="form-control" />
-                        <span asp-validation-for="SyncthingEndpoint"></span>
-                    </div>
-                    <div class="form-group">
-                        <label>Syncthing API key</label>
-                        <input asp-for="SyncthingApiKey" class="form-control" />
-                        <span asp-validation-for="SyncthingApiKey"></span>
+                        <label>Website root url (leave empty to determine automatically, but may broken f.e. website is behind proxy)</label>
+                        <input asp-for="RootUrl" class="form-control" placeholder="f.e. mydomain.com" />
+                        <span asp-validation-for="RootUrl"></span>
                     </div>
                 </div>
                 <div class="box-footer">
@@ -36,7 +31,32 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="col-xs-12 col-md-12 col-xs-12 col-sm-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <h4>Syncthing</h4>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label>Syncthing endpoint address</label>
+                        <input asp-for="SyncthingEndpoint" class="form-control" placeholder="f.e. http://localhost:8384" />
+                        <span asp-validation-for="SyncthingEndpoint"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Syncthing API key</label>
+                        <input asp-for="SyncthingApiKey" class="form-control" />
+                        <span asp-validation-for="SyncthingApiKey"></span>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" class="pull-right btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-xs-12 col-sm-12">
             <div class="box box-info">
                 <div class="box-header">
                     <h4>Users</h4>

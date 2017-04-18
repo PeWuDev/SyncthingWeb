@@ -27,7 +27,14 @@
 
                 <div class="form-group">
                     <label>Public link</label>
-                    <input type="text" readonly="readonly" value="@Url.AbsoluteAction("Index", Model.Share.NameOfController, new { area = Model.Share.AreaOfController, id = Model.Entry.Id })" class="form-control" />
+                    @{
+                        string publicUrl;
+                        if (!Model.BuildAbsoluteUrl(Url.Action("Index", Model.Share.NameOfController, new {area = Model.Share.AreaOfController, id = Model.Entry.Id}), out publicUrl))
+                        {
+                            publicUrl = Url.AbsoluteAction("Index", Model.Share.NameOfController, new {area = Model.Share.AreaOfController, id = Model.Entry.Id});
+                        }
+                     }
+                    <input type="text" readonly="readonly" value="@Html.Raw(publicUrl)" class="form-control" />
                 </div>
             </div>
             <div class="box-footer">

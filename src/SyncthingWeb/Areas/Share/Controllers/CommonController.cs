@@ -10,6 +10,7 @@ using SyncthingWeb.Areas.Share.Models;
 using SyncthingWeb.Areas.Share.Permissions;
 using SyncthingWeb.Areas.Share.Providers;
 using SyncthingWeb.Bus;
+using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Commands.Implementation.SharedEntries;
 using SyncthingWeb.Models;
 
@@ -20,6 +21,7 @@ namespace SyncthingWeb.Areas.Share.Controllers
     {
         private readonly IEventBus eventBus;
         private readonly ILogger<CommonController> logger;
+       
 
         public CommonController(IEventBus eventBus, ILogger<CommonController> logger)
         {
@@ -88,13 +90,16 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (sh == null) return this.NotFound();
 
+            var settings = await this.CommandFactory.Create<GetCurrentGeneralSettingsCommand>().GetAsync();
+
             var provider = this.GetShare(sh.Provider);
 
 
             return this.View(new SharePreviewViewModel
             {
                 Entry = sh,
-                Share = provider
+                Share = provider,
+                RootUrl = settings.RootUrl
             });
         }
 
@@ -165,6 +170,26 @@ namespace SyncthingWeb.Areas.Share.Controllers
         {
             public IShare Share { get; set; }
             public SharedEntry Entry { get; set; }
+
+            public string RootUrl { get; set; }
+
+
+            public bool BuildAbsoluteUrl(string partUrl, out string result)
+            {
+                Uri rootUri;
+                if (!Uri.TryCreate(RootUrl, UriKind.Absolute, out rootUri))
+                {
+                    result = partUrl;
+                    return false;
+                }
+
+                var mainUrl = rootUri.GetComponents(
+                    UriComponents.Scheme | UriComponents.Host | UriComponents.SchemeAndServer,
+                    UriFormat.Unescaped);
+
+                result = mainUrl + (partUrl.StartsWith("/") ? "" : "/") + partUrl;
+                return true;
+            }
         }
 
     }
