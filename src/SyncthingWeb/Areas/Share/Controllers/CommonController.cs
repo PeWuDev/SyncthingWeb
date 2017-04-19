@@ -90,8 +90,6 @@ namespace SyncthingWeb.Areas.Share.Controllers
 
             if (sh == null) return this.NotFound();
 
-            var settings = await this.CommandFactory.Create<GetCurrentGeneralSettingsCommand>().GetAsync();
-
             var provider = this.GetShare(sh.Provider);
 
 
@@ -99,7 +97,6 @@ namespace SyncthingWeb.Areas.Share.Controllers
             {
                 Entry = sh,
                 Share = provider,
-                RootUrl = settings.RootUrl
             });
         }
 
@@ -171,25 +168,6 @@ namespace SyncthingWeb.Areas.Share.Controllers
             public IShare Share { get; set; }
             public SharedEntry Entry { get; set; }
 
-            public string RootUrl { get; set; }
-
-
-            public bool BuildAbsoluteUrl(string partUrl, out string result)
-            {
-                Uri rootUri;
-                if (!Uri.TryCreate(RootUrl, UriKind.Absolute, out rootUri))
-                {
-                    result = partUrl;
-                    return false;
-                }
-
-                var mainUrl = rootUri.GetComponents(
-                    UriComponents.Scheme | UriComponents.Host | UriComponents.SchemeAndServer,
-                    UriFormat.Unescaped);
-
-                result = mainUrl + (partUrl.StartsWith("/") ? "" : "/") + partUrl;
-                return true;
-            }
         }
 
     }
