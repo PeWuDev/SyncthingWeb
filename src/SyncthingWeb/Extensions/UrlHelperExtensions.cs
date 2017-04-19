@@ -87,10 +87,15 @@ namespace SyncthingWeb.Extensions
 
         private static bool BuildAbsoluteUrl(string rootUrl, string partUrl, out string result)
         {
-            Uri rootUri;
-            if (!Uri.TryCreate(rootUrl, UriKind.Absolute, out rootUri))
+            if (string.IsNullOrWhiteSpace(rootUrl))
             {
-                result = partUrl;
+                result = null;
+                return false;
+            }
+
+            if (!Uri.TryCreate(rootUrl, UriKind.Absolute, out Uri rootUri))
+            {
+                result = null;
                 return false;
             }
 
