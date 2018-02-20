@@ -15,13 +15,13 @@ namespace SyncthingWeb.Commands.Implementation.Users
             return this;
         }
 
-        public override async Task<IEnumerable<string>> ExecuteAsync()
+        public override Task<IEnumerable<string>> ExecuteAsync()
         {
-            return await
-                this.Context.Roles.AsNoTracking()
-                    .Where(r => this.Roles.Contains(r.Id))
-                    .SelectMany(r => r.Users.Select(usr => usr.UserId))
-                    .ToListAsync();
+            return (from userRole in Context.UserRoles.AsNoTracking()
+                    where Roles.Contains(userRole.RoleId)
+                    select userRole.UserId).Distinct().ToListAsync()
+                .ContinueWith(queryTaskResult => queryTaskResult.Result.AsEnumerable());
+
         }
     }
 }

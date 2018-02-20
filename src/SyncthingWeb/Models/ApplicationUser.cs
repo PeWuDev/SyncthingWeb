@@ -14,8 +14,11 @@ namespace SyncthingWeb.Models
         {
             this.Allowed = new HashSet<AllowedFolder>();
             this.SharedEntried = new HashSet<SharedEntry>();
+            this.Roles = new HashSet<IdentityUserRole<string>>();
             this.IsEnabled = true;
         }
+        
+        public virtual HashSet<IdentityUserRole<string>> Roles { get; set; }
 
         public virtual HashSet<AllowedFolder> Allowed { get; set; }
         public virtual HashSet<SharedEntry> SharedEntried { get; set; }
