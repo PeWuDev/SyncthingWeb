@@ -2,8 +2,10 @@
 using System.IO;
 using System.Threading.Tasks;
 using ImageSharp;
+using ImageSharp.Formats;
 using ImageSharp.Processing;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.Primitives;
 using SyncthingWeb.Areas.Folders.Models;
 using SyncthingWeb.Areas.Folders.Services;
 using SyncthingWeb.Caching;
@@ -64,7 +66,7 @@ namespace SyncthingWeb.Areas.Folders.ViewComponents
                         Size = new Size(90, 90),
                         Mode = ResizeMode.Crop,
                         Position = AnchorPosition.Center
-                    }).Save(ms);
+                    }).Save(ms, new JpegEncoder());
                 }
 
                 ms.Position = 0;

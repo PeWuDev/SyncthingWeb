@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SyncthingWeb.Data
 {
 #if DEBUG
-    public class TemporaryDbContextFactory : IDbContextFactory<ApplicationDbContext>
+    public class TemporaryDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         //public ApplicationDbContext Create()
         //{
@@ -16,7 +17,8 @@ namespace SyncthingWeb.Data
         //    builder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=pinchdb;Trusted_Connection=True;MultipleActiveResultSets=true");
         //    return new ApplicationDbContext(builder.Options);
         //}
-        public ApplicationDbContext Create(DbContextFactoryOptions options)
+
+        public ApplicationDbContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
             builder.UseSqlite("Filename=SyncthingWebDatabase.db");
