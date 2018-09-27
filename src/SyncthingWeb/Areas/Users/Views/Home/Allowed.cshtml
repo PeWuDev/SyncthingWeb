@@ -43,7 +43,7 @@
                                     @{
                                         var allowedIds = Model.Allowed.ToDictionary(a => a.Folder.FolderId);
                                     }
-                                    @foreach (var fd in (IEnumerable<SyncthingFolder>)ViewBag.Folders)
+                                    @foreach (var fd in (IEnumerable<Syncthing.Integration.SyncthingFolder>)ViewBag.Folders)
                                     {
                                         <tr data-fd-id="@fd.Id">
                                             <td>
