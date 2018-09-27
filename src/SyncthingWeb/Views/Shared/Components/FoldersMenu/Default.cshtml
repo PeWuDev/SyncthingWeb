@@ -1,7 +1,7 @@
 ﻿
 @using System.Threading.Tasks
+@using Syncthing.Integration
 @using SyncthingWeb.Extensions
-@using SyncthingWeb.ViewComponents
 @model SyncthingWeb.ViewComponents.FoldersMenuViewComponent.MenuViewComponentParam
 
 @{
@@ -12,12 +12,17 @@
     <a href="#"><i class="fa fa-folder-o"></i> <span>Folders</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
 
-        @foreach (var folder in Model.Context.Folders)
+        @foreach (var folder in Model.Context == null ? Enumerable.Empty<SyncthingFolder>() : Model.Context.Folders)
         {
             if (allowed == null || allowed.Contains(folder.Id))
             {
                 <li class="@Html.ActivePage("Home", "Index", "Folders")"><a href="@Url.Action("Index", "Home", new {area = "Folders", id = folder.Id, path = ""})">@folder.Id</a></li>
             }
+        }
+        
+        @if (Model.Context == null)
+        {
+            <li><a href="#">Syncthing connection error</a></li>
         }
     </ul>
 </li>

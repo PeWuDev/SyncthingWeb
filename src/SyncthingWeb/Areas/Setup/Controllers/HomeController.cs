@@ -129,6 +129,7 @@ namespace SyncthingWeb.Areas.Setup.Controllers
                 gs.SyncthingEndpoint = model.SyncthingEndpoint;
                 gs.SyncthingApiKey = model.SyncthingApiKey;
                 gs.EnableRegistration = model.EnableRegistration;
+                gs.RootUrl= model.RootUrl;
             }).ExecuteAsync();
 
             this.Notifications.NotifySuccess("Settings saved successfully.");

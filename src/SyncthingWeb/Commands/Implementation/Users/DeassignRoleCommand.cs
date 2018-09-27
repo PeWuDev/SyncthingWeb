@@ -4,6 +4,7 @@ using SyncthingWeb.Caching;
 using SyncthingWeb.Commands.Implementation.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
 using SyncthingWeb.Bus;
 
 namespace SyncthingWeb.Commands.Implementation.Users

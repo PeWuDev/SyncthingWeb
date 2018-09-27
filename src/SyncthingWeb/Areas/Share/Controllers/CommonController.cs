@@ -10,6 +10,7 @@ using SyncthingWeb.Areas.Share.Models;
 using SyncthingWeb.Areas.Share.Permissions;
 using SyncthingWeb.Areas.Share.Providers;
 using SyncthingWeb.Bus;
+using SyncthingWeb.Commands.Implementation.Settings;
 using SyncthingWeb.Commands.Implementation.SharedEntries;
 using SyncthingWeb.Models;
 
@@ -20,6 +21,7 @@ namespace SyncthingWeb.Areas.Share.Controllers
     {
         private readonly IEventBus eventBus;
         private readonly ILogger<CommonController> logger;
+       
 
         public CommonController(IEventBus eventBus, ILogger<CommonController> logger)
         {
@@ -94,7 +96,7 @@ namespace SyncthingWeb.Areas.Share.Controllers
             return this.View(new SharePreviewViewModel
             {
                 Entry = sh,
-                Share = provider
+                Share = provider,
             });
         }
 
@@ -165,6 +167,7 @@ namespace SyncthingWeb.Areas.Share.Controllers
         {
             public IShare Share { get; set; }
             public SharedEntry Entry { get; set; }
+
         }
 
     }

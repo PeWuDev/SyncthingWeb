@@ -128,7 +128,7 @@ namespace SyncthingWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Error while assigning folders to user {0}", user);
+                this.logger.LogError("Error while assigning folders to user {0}: {1}", user, ex.Message);
                 this.Notifications.NotifyError("Error while saving allowed folders.");
                 return this.RedirectToAction("Allowed", new { id = user });
             }

@@ -13,8 +13,7 @@
             <div class="box-body">
                 <p>You have succesffuly shared file "@ViewBag.SharedEntry.Path" in @ViewBag.SharedEntry.Folder.FolderId folder.</p>
                 <p>Here is your public link</p>
-
-                <input readonly="readonly" class="form-control" value="@Url.AbsoluteAction("Index", "PasswordProtected", new { area ="Share", id = Model})" />
+                <input readonly="readonly" class="form-control" value="@Url.AbsoluteOrCustomAction("Index", "PasswordProtected", new { area ="Share", id = Model})" />
             </div>
         </div>
     </div>

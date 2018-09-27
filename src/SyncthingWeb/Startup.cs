@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentScheduler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +19,7 @@ using SyncthingWeb.Bus;
 using SyncthingWeb.Commands;
 using SyncthingWeb.Commands.Implementation.Events;
 using SyncthingWeb.Data;
+using SyncthingWeb.Exceptions;
 using SyncthingWeb.Models;
 using SyncthingWeb.Modules;
 using SyncthingWeb.Permissions;
@@ -40,7 +43,7 @@ namespace SyncthingWeb
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                builder.AddUserSecrets(Assembly.GetEntryAssembly());
             }
 
             builder.AddEnvironmentVariables();
@@ -76,7 +79,6 @@ namespace SyncthingWeb
 
             });
           
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -84,7 +86,9 @@ namespace SyncthingWeb
             services.AddMvc(opt =>
             {
                 opt.Filters.Add(typeof(SetupRequiredAttribute));
+                opt.Filters.Add(typeof(GlobalExceptionFilter));
             });
+
             services.AddDistributedMemoryCache();
             services.AddSession();
 
@@ -143,7 +147,7 @@ namespace SyncthingWeb
             }
 
             app.UseStaticFiles();
-            app.UseIdentity();
+            app.UseAuthentication();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
@@ -158,6 +162,7 @@ namespace SyncthingWeb
                     template: "{controller=Home}/{action=Index}/{id?}");
 
             });
+
 
             JobManager.Start();
         }

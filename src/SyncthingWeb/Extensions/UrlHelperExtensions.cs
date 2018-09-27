@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SyncthingWeb.Commands;
+using SyncthingWeb.Commands.Implementation.Settings;
 
 namespace SyncthingWeb.Extensions
 {
@@ -13,6 +15,26 @@ namespace SyncthingWeb.Extensions
 /// </summary>
     public static class UrlHelperExtensions
     {
+        public static string AbsoluteOrCustomAction(
+            this IUrlHelper url,
+            string actionName,
+            string controllerName,
+            object routeValues = null)
+        {
+            var commandFactory = (ICommandFactory)url.ActionContext.HttpContext.RequestServices.GetService(typeof(ICommandFactory));
+            var settings = Task.Run(
+                    async () => await commandFactory.Create<GetCurrentGeneralSettingsCommand>().GetAsync())
+                .Result;
+            
+            
+            if (BuildAbsoluteUrl(settings.RootUrl, url.Action(actionName, controllerName, routeValues), out var result))
+            {
+                return result;
+            }
+
+            return AbsoluteAction(url, actionName, controllerName, routeValues);
+        }
+
         /// <summary>
         /// Generates a fully qualified URL to an action method by using the specified action name, controller name and
         /// route values.
@@ -59,6 +81,30 @@ namespace SyncthingWeb.Extensions
             object routeValues = null)
         {
             return url.RouteUrl(routeName, routeValues, url.ActionContext.HttpContext.Request.Scheme);
+        }
+
+
+
+        private static bool BuildAbsoluteUrl(string rootUrl, string partUrl, out string result)
+        {
+            if (string.IsNullOrWhiteSpace(rootUrl))
+            {
+                result = null;
+                return false;
+            }
+
+            if (!Uri.TryCreate(rootUrl, UriKind.Absolute, out Uri rootUri))
+            {
+                result = null;
+                return false;
+            }
+
+            var mainUrl = rootUri.GetComponents(
+                UriComponents.Scheme | UriComponents.Host | UriComponents.SchemeAndServer,
+                UriFormat.Unescaped);
+
+            result = mainUrl + (partUrl.StartsWith("/") ? "" : "/") + partUrl;
+            return true;
         }
     }
 }

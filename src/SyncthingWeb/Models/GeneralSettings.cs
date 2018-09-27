@@ -18,6 +18,8 @@
 
         public virtual bool EnableRegistration { get; set; }
 
+        public virtual string RootUrl { get; set; }
+
         public bool NeedsUpgrade()
             => string.IsNullOrEmpty(this.SyncthingApiKey) || string.IsNullOrEmpty(this.SyncthingEndpoint);
     }

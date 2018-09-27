@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SyncthingWeb.Areas.Users.Models;
 using SyncthingWeb.Commands.Implementation.Users;
 using SyncthingWeb.Helpers;
@@ -17,10 +19,12 @@ namespace SyncthingWeb.Areas.Users.Controllers
     public class RoleController : ExtendedController
     {
         private readonly IPermissionResolver permResolver;
+        private readonly ILogger<RoleController> logger;
 
-        public RoleController(IPermissionResolver permResolver)
+        public RoleController(IPermissionResolver permResolver, ILogger<RoleController> logger)
         {
             this.permResolver = permResolver;
+            this.logger = logger;
         }
 
         public async Task<ActionResult> Index(RoleQuery query)
@@ -97,7 +101,7 @@ namespace SyncthingWeb.Areas.Users.Controllers
             }
             catch (Exception ex)
             {
-                //*this.Logger.ErrorException(ex, "Errpr while updating role.");
+                this.logger.LogError("Errpr while updating role: {0}", ex.Message);
                 this.Notifications.NotifyError("Unhandled exception while saving role.");
 
                 return this.View(entity);
