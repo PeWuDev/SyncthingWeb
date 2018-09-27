@@ -17,9 +17,12 @@ Basic features implemented so far:
 * Downloading files & folders
 * Sharing files
 * Users management (with folders permissions) 
+* Previewing files
+
+What is under testing? (will be available very soon)
+* .NET Core 2.1 update
 
 What is not present?
-* Previewing files
 * Uploading
 * Advanced user management
 * Sending mails
@@ -27,11 +30,11 @@ What is not present?
 
 ## Screenshots
 
-![Setup](https://raw.githubusercontent.com/pwasiewicz/SyncthingWebUI/master/Assets/Setup.jpg)
-![Dashboard](https://raw.githubusercontent.com/pwasiewicz/SyncthingWebUI/master/Assets/Dashboard.jpg)
-![Files](https://raw.githubusercontent.com/pwasiewicz/SyncthingWebUI/master/Assets/Files.jpg)
-![Sharing](https://raw.githubusercontent.com/pwasiewicz/SyncthingWebUI/master/Assets/Sharing.jpg)
-
+![Setup](https://raw.githubusercontent.com/PeWuDev/SyncthingWeb/master/Assets/Setup.jpg)
+![Dashboard](https://raw.githubusercontent.com/PeWuDev/SyncthingWeb/development/Assets/Dashboard.jpg)
+![Files](https://raw.githubusercontent.com/PeWuDev/SyncthingWeb/master/Assets/Files.jpg)
+![Sharing](https://raw.githubusercontent.com/PeWuDev/SyncthingWeb/master/Assets/Sharing.jpg)
+![Devices](https://raw.githubusercontent.com/PeWuDev/SyncthingWeb/master/Assets/Devices.jpg)
 ## Requirements
 * None!
 
@@ -41,7 +44,6 @@ Run `SyncthingWeb.exe` to start built-in kestrel server that will host your appl
 
 ### From source
 * Download sources from github
-* Add ImageSharp MyGet feed (https://www.myget.org/F/imagesharp/api/v3/index.json) to nuget package sources (tutorial: https://github.com/aspnet/Home/wiki/Configuring-the-feed-used-by-dnu-to-restore-packages)
 * Run ```dotnet restore``` to install Asp.net core dependencies
 * Run ```bower install``` to install bower dependencies
 * Run ```npm install``` to install nodejs depdencies
@@ -98,10 +100,11 @@ Currently, there are two databse providers:
 - SQLite (**default**)
 
 ## Release notes
-### v1.0.1
 
+### v1.0.1
 + Previewing image files
 * Notifications are shown properly
+
 ### v1.0.0
 
 * First release
