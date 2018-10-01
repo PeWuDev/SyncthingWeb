@@ -9,7 +9,8 @@ module.exports = function (grunt) {
                   { expand: true, cwd: "bower_components/jquery/dist", src: ['**'], dest: 'wwwroot/lib/jquery/dist/' },
                   { expand: true, cwd: "bower_components/jquery-validation/dist", src: ['**'], dest: 'wwwroot/lib/jquery-validation/dist/' },
                   { expand: true, cwd: "bower_components/jquery-validation-unobtrusive/", src: ['*.js'], dest: 'wwwroot/lib/jquery-validation-unobtrusive/' },
-                  { expand: true, cwd: "bower_components/select2/dist", src: ['**'], dest: 'wwwroot/lib/select2/dist/' }
+                    { expand: true, cwd: "bower_components/select2/dist", src: ['**'], dest: 'wwwroot/lib/select2/dist/' },
+                    { expand: true, cwd: "bower_components/moment/min", src: ['**'], dest: 'wwwroot/lib/momentjs/dist/' }
                 ],
             },
         }
