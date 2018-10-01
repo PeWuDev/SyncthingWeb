@@ -66,4 +66,8 @@
     <ProjectReference Include="..\Syncthing.Integration\Syncthing.Integration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
